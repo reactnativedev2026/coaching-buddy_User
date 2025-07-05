@@ -1,0 +1,15 @@
+{
+    "heading": "Complete Your Profile",
+    "subHeading": "Don’t worry, only you ca see your personal data. No one else will be able to see it.",
+
+    "nameFieldLabel": "Name",
+    "nameFieldPlaceholder": "Username",
+
+    "mobileFieldLabel": "Mobile Number",
+    "mobileFieldPlaceholder": "Number",
+
+    "emailFieldLabel": "Email",
+    "emailFieldPlaceholder": "Email Id",
+
+    "buttonText": "Complete Profile"
+}

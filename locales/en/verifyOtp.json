@@ -1,0 +1,7 @@
+{
+    "heading": "Verify OTP",
+
+    "otpFieldLabel": "OTP",
+    "otpFieldPlaceholder": "Enter 4-digit OTP",
+    "buttonText": "Verify"
+}

@@ -1,0 +1,12 @@
+{
+    "nameFieldLabel": "Name",
+    "nameFieldPlaceholder": "Username",
+
+    "mobileFieldLabel": "Mobile Number",
+    "mobileFieldPlaceholder": "Number",
+
+    "emailFieldLabel": "Email",
+    "emailFieldPlaceholder": "Email Id",
+
+    "buttonText": "Update Profile"
+}
