@@ -12,14 +12,14 @@ export default function HomeHeader() {
     const { user } = useAppSelector((state) => state.user);
 
     return (
-        <View className="bg-secondary px-4 py-6 gap-4">
+        <View className="bg-accent1 px-4 py-6 gap-4">
             <View className="flex-row items-center justify-between">
                 <View>
-                    <Text className="text-primary/50 text-xl font-pSemiBold">
+                    <Text className="text-secondary text-xl font-pSemiBold">
                         {content.heading}
                     </Text>
 
-                    <Text className="text-primary text-lg font-pSemiBold">
+                    <Text className="text-secondary text-lg font-pSemiBold">
                         {user?.name != null ? user.name : "Guest"}
                     </Text>
                 </View>
@@ -32,7 +32,7 @@ export default function HomeHeader() {
                     {user?.avatarName != null ? (
                         <CustomImage
                             image={IMAGES[user.avatarName ?? "EduBee"]}
-                            className="w-20 aspect-square rounded-full bg-primary/10"
+                            className="w-20 aspect-square rounded-full bg-secondary"
                             imageClassName="w-full h-full"
                         />
                     ) : (

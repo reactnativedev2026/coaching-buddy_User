@@ -1,121 +1,48 @@
-import { AntDesign } from "@expo/vector-icons";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { useAppSelector } from "@/redux/store";
+import { MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { Text, View } from "react-native";
+import SavedItem from "../SavedItem/SavedItem";
 import CustomButton from "../common/CustomButton";
-import CustomImage from "../common/CustomImage";
-
-type CollegeType = {
-    name: string;
-    rate: number;
-    ratings: number;
-    course: string;
-    location: string;
-};
 
 export default function HomeSavedColleges() {
-    const colleges: CollegeType[] = [
-        {
-            name: "College Name",
-            rate: 34650,
-            location: "Pune, India",
-            ratings: 4.9,
-            course: "B.Tech",
-        },
-        {
-            name: "College Name",
-            rate: 34650,
-            location: "Pune, India",
-            ratings: 4.9,
-            course: "B.Tech",
-        },
-        {
-            name: "College Name",
-            rate: 34650,
-            location: "Pune, India",
-            ratings: 4.9,
-            course: "B.Tech",
-        },
-        {
-            name: "College Name",
-            rate: 34650,
-            location: "Pune, India",
-            ratings: 4.9,
-            course: "B.Tech",
-        },
-        {
-            name: "College Name",
-            rate: 34650,
-            location: "Pune, India",
-            ratings: 4.9,
-            course: "B.Tech",
-        },
-    ];
+    const { saved } = useAppSelector((state) => state.saved);
+
+    if (saved.length === 0) return null;
+
+    const savedSubList = saved.slice(0, 5);
 
     return (
         <View className="px-4 py-2">
-            <Text className="text-primary text-xl font-pBold">
-                Saved Colleges
-            </Text>
+            <View className="flex-row items-center justify-between">
+                <Text className="text-primary text-xl font-pBold">
+                    Saved Colleges
+                </Text>
+
+                {saved.length > 5 && (
+                    <CustomButton
+                        className="flex-row items-center gap-2 px-4 py-2"
+                        debounce
+                        onPress={() => router.push("/favorite")}
+                    >
+                        <Text className="text-accent1 font-pSemiBold text-sm">
+                            See all
+                        </Text>
+
+                        <MaterialIcons
+                            name="arrow-forward"
+                            size={18}
+                            color="#006EFF"
+                        />
+                    </CustomButton>
+                )}
+            </View>
 
             <View className="gap-2">
-                {colleges.map((college, i) => (
-                    <CollegeItem {...college} key={i} />
+                {savedSubList.map((college, i) => (
+                    <SavedItem item={college} key={i} />
                 ))}
             </View>
         </View>
-    );
-}
-
-function CollegeItem({ name, rate, ratings, course, location }: CollegeType) {
-    return (
-        <CustomButton
-            className={
-                "flex-row items-center bg-secondary rounded-xl shadow-md px-6 py-3 gap-2"
-            }
-        >
-            <CustomImage
-                image={{ uri: "https://picsum.photos/seed/picsum/200" }}
-                className="w-32 aspect-square rounded-xl"
-                imageClassName="w-full h-full"
-            />
-
-            <View className="flex-1 flex-row items-center px-2 justify-between">
-                <View className="gap-2">
-                    <Text className="text-primary font-pSemiBold leading-5">
-                        {name}
-                    </Text>
-
-                    <View className="flex-row items-center">
-                        <AntDesign name="star" size={16} color="orange" />
-
-                        <Text className="text-primary/50 text-sm font-pSemiBold mt-1">
-                            {ratings}
-                        </Text>
-                    </View>
-
-                    <View className="flex-row items-center">
-                        <Ionicons
-                            name="location-sharp"
-                            size={16}
-                            color={"#000"}
-                        />
-
-                        <Text className="text-primary text-xs font-pSemiBold">
-                            {location}
-                        </Text>
-                    </View>
-
-                    <Text className="text-accent1 text-sm font-pSemiBold">
-                        ₹{rate}/month
-                    </Text>
-                </View>
-
-                <View className="bg-primary/10 px-2 py-1 rounded-lg">
-                    <Text className="text-accent1 text-xs font-pRegular">
-                        {course}
-                    </Text>
-                </View>
-            </View>
-        </CustomButton>
     );
 }

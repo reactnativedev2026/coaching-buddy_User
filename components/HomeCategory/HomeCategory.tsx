@@ -1,3 +1,4 @@
+import getCapitalizedText from "@/lib/getCapitalizedText";
 import CategoryType from "@/types/Category.type";
 import { router } from "expo-router";
 import { FlatList, Text, View } from "react-native";
@@ -57,8 +58,7 @@ function CategoryItem({
             <Text
                 className={`text-xs font-pSemiBold  ${isSelected ? "text-accent1" : "text-primary"}`}
             >
-                {category.name.slice(0, 1).toUpperCase() +
-                    category.name.slice(1)}
+                {getCapitalizedText(category.name)}
             </Text>
         </CustomButton>
     );

@@ -4,6 +4,7 @@ const envConfig = {
 
     // AsyncStorage keys
     authTokenStorageKey: process.env.EXPO_PUBLIC_AUTH_TOKEN_STORAGE_KEY!,
+    savedStorageKey: process.env.EXPO_PUBLIC_SAVED_STORAGE_KEY!,
 };
 
 export default envConfig;

@@ -1,4 +1,5 @@
 import useAuth from "@/hooks/useAuth.hook";
+import useSyncSavedColleges from "@/hooks/useSyncSavedColleges.hook";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -19,15 +20,17 @@ export default function AppLayout() {
 
     const { isAuthLoading, isAuthenticated } = useAuth();
 
+    const { isSyncSavedLoading } = useSyncSavedColleges(isAuthLoading);
+
     useEffect(() => {
-        if (isAuthLoading) return;
+        if (isAuthLoading || isSyncSavedLoading) return;
 
         if (fontsLoaded || fontsError) {
             SplashScreen.hideAsync();
         }
-    }, [isAuthLoading, fontsLoaded, fontsError]);
+    }, [isAuthLoading, isSyncSavedLoading, fontsLoaded, fontsError]);
 
-    if (isAuthLoading || (!fontsLoaded && !fontsError)) {
+    if (isAuthLoading || isSyncSavedLoading || (!fontsLoaded && !fontsError)) {
         return null;
     }
 
@@ -40,9 +43,9 @@ export default function AppLayout() {
             >
                 <Stack.Screen name="index" />
 
-                {/* <Stack.Protected guard={!isAuthenticated}>
+                <Stack.Protected guard={!isAuthenticated}>
                     <Stack.Screen name="(auth)" />
-                </Stack.Protected> */}
+                </Stack.Protected>
             </Stack>
         </SafeAreaView>
     );

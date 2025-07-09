@@ -1,5 +1,6 @@
 import api from "@/lib/axios/axios";
 import ApiResponseType from "@/types/ApiRespnse.type";
+import { CollegeAPIResponseDataType } from "./college.api";
 
 export async function getParentCategories() {
     const res = await api.get<
@@ -28,25 +29,7 @@ export async function getSubCategoriesOrStores(parentCategoryId: string) {
             }[];
 
             isColleges?: boolean;
-            colleges?: {
-                uid: string;
-                name: string;
-                parent_id: string;
-                amount_paid: string;
-                images: {
-                    logo: { path: string }[];
-                    gallery: { path: string }[];
-                    banner: { path: string }[];
-                    cover: { path: string }[];
-                };
-                address: {
-                    state: string;
-                    city: string;
-                    area: string;
-                    near_by: string;
-                    pincode: string;
-                };
-            }[];
+            colleges?: CollegeAPIResponseDataType[];
         }>
     >(`/category/sub-categories-or-stores/${parentCategoryId}`);
 

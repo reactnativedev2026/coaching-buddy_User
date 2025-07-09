@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
+import SavedReducer from "./slices/save.slice";
 import UserReducer from "./slices/user.slice";
 
 const store = configureStore({
     reducer: {
         user: UserReducer,
+        saved: SavedReducer,
     },
 });
 

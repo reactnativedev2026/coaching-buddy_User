@@ -3,12 +3,14 @@ import CustomHeader from "@/components/common/CustomHeader";
 import CustomImage from "@/components/common/CustomImage";
 import Loader from "@/components/common/Loader";
 import NotFound from "@/components/common/NotFound";
+import SaveButton from "@/components/SaveButton/SaveButton";
 import useGetSubCategoriesOrColleges from "@/hooks/useGetSubCategoriesOrColleges.hook";
 import chunkArray from "@/lib/chunkArray";
+import getCapitalizedText from "@/lib/getCapitalizedText";
 import getImageURI from "@/lib/getImageURI";
 import CategoryType from "@/types/Category.type";
 import CollegeType from "@/types/College.type";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { FlatList, Text, useWindowDimensions, View } from "react-native";
 
@@ -37,8 +39,6 @@ export default function List() {
 function Categories({ categories }: { categories: CategoryType[] }) {
     const { width } = useWindowDimensions();
     const { categoryName } = useLocalSearchParams<{ categoryName: string }>();
-    const capitalizedCategoryName =
-        categoryName?.slice(0, 1).toUpperCase() + categoryName?.slice(1);
 
     // Set padding
     const horizontalPadding = 16;
@@ -57,7 +57,7 @@ function Categories({ categories }: { categories: CategoryType[] }) {
     return (
         <>
             <CustomHeader
-                title={`${capitalizedCategoryName} - Sub Categories`}
+                title={`${getCapitalizedText(categoryName)} - Sub Categories`}
             />
 
             <View
@@ -115,8 +115,6 @@ function Categories({ categories }: { categories: CategoryType[] }) {
 function Colleges({ colleges }: { colleges: CollegeType[] }) {
     const { width } = useWindowDimensions();
     const { categoryName } = useLocalSearchParams<{ categoryName: string }>();
-    const capitalizedCategoryName =
-        categoryName?.slice(0, 1).toUpperCase() + categoryName?.slice(1);
 
     // Suggested UX-optimized item count
     let itemsPerRow = 4;
@@ -133,7 +131,9 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
 
     return (
         <>
-            <CustomHeader title={`${capitalizedCategoryName} - Colleges`} />
+            <CustomHeader
+                title={`${getCapitalizedText(categoryName)} - Colleges`}
+            />
             <View
                 style={{
                     paddingHorizontal: horizontalPadding,
@@ -157,6 +157,10 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
                                                 ? gapBetweenItems
                                                 : 0,
                                     }}
+                                    onPress={() =>
+                                        router.push(`/college/${item.id}`)
+                                    }
+                                    debounce
                                 >
                                     <CustomImage
                                         image={{
@@ -174,12 +178,24 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
                                                 className="text-primary font-pSemiBold text-sm leading-5"
                                                 numberOfLines={2}
                                             >
-                                                {item.name}
+                                                {getCapitalizedText(item.name)}
                                             </Text>
 
-                                            <Text className="text-accent1 text-xs font-pSemiBold">
+                                            {/* <Text className="text-accent1 text-xs font-pSemiBold">
                                                 ₹ {item.amountPaid}/month
-                                            </Text>
+                                            </Text> */}
+
+                                            <View className="flex-row items-center">
+                                                <AntDesign
+                                                    name="star"
+                                                    size={16}
+                                                    color="orange"
+                                                />
+
+                                                <Text className="text-primary/50 text-sm font-pSemiBold mt-1">
+                                                    4.5
+                                                </Text>
+                                            </View>
 
                                             <View className="flex-row items-center">
                                                 <Ionicons
@@ -196,13 +212,7 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
                                             </View>
                                         </View>
 
-                                        <CustomButton className="self-start bg-accent1/10 rounded-full p-1">
-                                            <MaterialCommunityIcons
-                                                name="bookmark-minus"
-                                                size={20}
-                                                color={"#666"}
-                                            />
-                                        </CustomButton>
+                                        <SaveButton item={item} />
                                     </View>
                                 </CustomButton>
                             ))}

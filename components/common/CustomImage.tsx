@@ -1,6 +1,6 @@
-import { Image, ImageSourcePropType, View } from "react-native";
+import { Image, ImageSourcePropType, View, ViewProps } from "react-native";
 
-type CustomImagePropsType = {
+type CustomImagePropsType = ViewProps & {
     image: ImageSourcePropType;
     uri?: string;
     className?: string;
@@ -12,9 +12,10 @@ export default function CustomImage({
     uri,
     className,
     imageClassName,
+    ...props
 }: CustomImagePropsType) {
     return (
-        <View className={`overflow-hidden ${className}`}>
+        <View className={`overflow-hidden ${className}`} {...props}>
             <Image
                 source={uri == null ? image : { uri }}
                 className={`max-w-full max-h-full ${imageClassName}`}

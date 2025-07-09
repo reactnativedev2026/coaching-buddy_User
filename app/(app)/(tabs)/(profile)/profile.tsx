@@ -24,7 +24,7 @@ export default function Profile() {
     if (user == null) return null;
 
     return (
-        <ScrollView contentContainerClassName="min-h-full flex-1 bg-secondary gap-6 pb-20 px-8">
+        <ScrollView contentContainerClassName="min-h-full flex-1 bg-secondary gap-6 pb-20 px-8 pt-4">
             <View className="flex-row items-center gap-4 border-b-2 border-b-primary/10 pb-6">
                 <CustomImage
                     image={IMAGES[user?.avatarName ?? "EduBee"]}
@@ -58,6 +58,7 @@ export default function Profile() {
                         />
                     }
                     title="Favorite"
+                    href="/favorite"
                 />
 
                 <ProfileOption

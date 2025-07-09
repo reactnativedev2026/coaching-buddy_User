@@ -1,10 +1,14 @@
+import getAverageRating from "@/lib/getAverageRating";
+import getCapitalizedText from "@/lib/getCapitalizedText";
 import getImageURI from "@/lib/getImageURI";
 import CollegeType from "@/types/College.type";
+import { AntDesign } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { router } from "expo-router";
 import { FlatList, Text, useWindowDimensions, View } from "react-native";
 import CustomButton from "../common/CustomButton";
 import CustomImage from "../common/CustomImage";
+import SaveButton from "../SaveButton/SaveButton";
 
 type HomeCollegesPropsType = {
     isLoading: boolean;
@@ -35,12 +39,14 @@ export default function HomeColleges({
     );
 }
 
-function CollegeItem({
-    college: { name, amountPaid, address, images },
-}: {
-    college: CollegeType;
-}) {
+function CollegeItem({ college }: { college: CollegeType }) {
     const { width } = useWindowDimensions();
+
+    const { name, amountPaid, address, images } = college;
+
+    const averageRating = getAverageRating(
+        college.comments.map((item) => item.rating)
+    );
 
     return (
         <CustomButton
@@ -50,6 +56,8 @@ function CollegeItem({
             style={{
                 width: width / 2,
             }}
+            onPress={() => router.push(`/college/${college.id}`)}
+            debounce
         >
             <CustomImage
                 // image={{ uri: "https://picsum.photos/seed/picsum/200" }}
@@ -61,12 +69,18 @@ function CollegeItem({
             <View className="flex-row px-2 justify-between">
                 <View className="gap-2">
                     <Text className="text-primary font-pSemiBold leading-5">
-                        {name}
+                        {getCapitalizedText(name)}
                     </Text>
 
-                    <Text className="text-accent1 text-xs font-pSemiBold">
-                        ₹ {amountPaid}/month
-                    </Text>
+                    {averageRating > 0 && (
+                        <View className="flex-row items-center">
+                            <AntDesign name="star" size={16} color="orange" />
+
+                            <Text className="text-primary/50 text-sm font-pSemiBold mt-1">
+                                {averageRating}
+                            </Text>
+                        </View>
+                    )}
 
                     <View className="flex-row items-center">
                         <Ionicons
@@ -81,13 +95,7 @@ function CollegeItem({
                     </View>
                 </View>
 
-                <CustomButton className="self-end bg-accent1/10 rounded-full p-1">
-                    <MaterialCommunityIcons
-                        name="bookmark-minus"
-                        size={24}
-                        color={"#666"}
-                    />
-                </CustomButton>
+                <SaveButton item={college} />
             </View>
         </CustomButton>
     );

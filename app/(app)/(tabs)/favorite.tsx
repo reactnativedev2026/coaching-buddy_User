@@ -1,18 +1,22 @@
-import CustomImage from "@/components/common/CustomImage";
-import IMAGES from "@/constants/images.contant";
-import { ScrollView, Text } from "react-native";
+import CustomHeader from "@/components/common/CustomHeader";
+import SavedItem from "@/components/SavedItem/SavedItem";
+import { useAppSelector } from "@/redux/store";
+import { View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 
 export default function Favorite() {
-    return (
-        <ScrollView contentContainerClassName="min-h-full flex-1 bg-secondary gap-6 pb-20">
-            <CustomImage
-                image={IMAGES.WelcomeImage}
-                className="w-full aspect-square"
-            />
+    const { saved } = useAppSelector((state) => state.saved);
 
-            <Text className="text-primary font-pBold text-3xl self-center">
-                Favorites
-            </Text>
-        </ScrollView>
+    return (
+        <View className="flex-1 bg-secondary">
+            <CustomHeader title="Favorite" />
+
+            <View className="px-4">
+                <FlatList
+                    data={saved}
+                    renderItem={({ item }) => <SavedItem item={item} />}
+                />
+            </View>
+        </View>
     );
 }

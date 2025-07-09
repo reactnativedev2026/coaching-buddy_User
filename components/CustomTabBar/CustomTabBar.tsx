@@ -27,12 +27,6 @@ export default function CustomTabBar({
                 );
             case "booking":
                 return (
-                    // <MaterialIcons
-                    //     name="category"
-                    //     size={22}
-                    //     color={isFocused ? activeColor : inactiveColor}
-                    // />
-
                     <FontAwesome5
                         name="table"
                         size={20}
@@ -42,8 +36,8 @@ export default function CustomTabBar({
             case "favorite":
                 return (
                     <MaterialCommunityIcons
-                        name={isFocused ? "heart" : "heart-outline"}
-                        size={22}
+                        name={isFocused ? "bookmark" : "bookmark-outline"}
+                        size={24}
                         color={isFocused ? activeColor : inactiveColor}
                     />
                 );

@@ -13,10 +13,10 @@ export default function Home() {
         useGetCollegesByCategoryId(isLoading, parentCategories[0]?.id);
 
     return (
-        <View className="flex-1">
+        <View className="flex-1 bg-secondary">
             <HomeHeader />
 
-            <ScrollView contentContainerClassName="bg-secondary gap-6 pb-20">
+            <ScrollView contentContainerClassName="gap-6 pb-20 pt-4">
                 <HomeCategory
                     isLoading={isLoading}
                     parentCategories={parentCategories}

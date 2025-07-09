@@ -9,17 +9,17 @@ type CustomHeaderPropsType = {
 
 export default function CustomHeader({ title }: CustomHeaderPropsType) {
     return (
-        <View className="bg-secondary items-center justify-center px-4 py-6">
+        <View className="bg-accent1 items-center justify-center px-4 py-6">
             <CustomButton
                 onPress={() => {
                     if (router.canGoBack()) router.back();
                 }}
                 className="absolute left-2 p-6"
             >
-                <Ionicons name="arrow-back-outline" size={24} color="black" />
+                <Ionicons name="arrow-back-outline" size={24} color="#fff" />
             </CustomButton>
 
-            <Text className="text-primary text-lg font-pSemiBold text-center">
+            <Text className="text-secondary text-lg font-pSemiBold text-center">
                 {title}
             </Text>
         </View>
