@@ -13,7 +13,7 @@ export default function HomeSavedColleges() {
     const savedSubList = saved.slice(0, 5);
 
     return (
-        <View className="px-4 py-2">
+        <View className="px-4 py-2 gap-2">
             <View className="flex-row items-center justify-between">
                 <Text className="text-primary text-xl font-pBold">
                     Saved Colleges

@@ -18,7 +18,7 @@ type CollegeType = {
         nearBy: string;
         pincode: string;
     };
-    comments: {
+    comments?: {
         id: string;
         rating: number;
         comment: string;
@@ -35,7 +35,7 @@ type CollegeType = {
         type: "whatsapp" | "phone";
         value: string;
     }[];
-    courses: {
+    courses?: {
         id: string;
         name: string;
         price: string;

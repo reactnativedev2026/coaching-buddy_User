@@ -73,7 +73,7 @@ export default function useGetSubCategoriesOrColleges() {
                                     nearBy: item.address.near_by,
                                     pincode: item.address.pincode,
                                 },
-                                comments: item.comments.map((item) => {
+                                comments: item.comments?.map((item) => {
                                     return {
                                         id: item.uid,
                                         rating: item.rating,
@@ -96,7 +96,7 @@ export default function useGetSubCategoriesOrColleges() {
                                         value: detail.value,
                                     };
                                 }),
-                                courses: item.products.map((product) => ({
+                                courses: item.products?.map((product) => ({
                                     id: product.uid,
                                     name: product.name,
                                     price: product.price,

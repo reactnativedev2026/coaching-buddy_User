@@ -1,5 +1,6 @@
 // images
 import LoginImage from "@/assets/images/login-image.png";
+import OfflineImage from "@/assets/images/offline-image.png";
 import WelcomeImage from "@/assets/images/welcome-image.png";
 
 // avatars
@@ -12,6 +13,7 @@ const IMAGES = {
     // images
     WelcomeImage,
     LoginImage,
+    OfflineImage,
 
     // avatars
     StudyBuddy,

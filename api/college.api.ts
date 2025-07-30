@@ -22,7 +22,7 @@ export type CollegeAPIResponseDataType = {
         near_by: string;
         pincode: string;
     };
-    comments: {
+    comments?: {
         uid: string;
         rating: number;
         comment: string;
@@ -40,7 +40,7 @@ export type CollegeAPIResponseDataType = {
         type: "whatsapp" | "phone";
         value: string;
     }[];
-    products: {
+    products?: {
         uid: string;
         name: string;
         price: string;
@@ -107,6 +107,29 @@ export async function addComment(data: AddCommentParamType) {
             comment: data.comment,
         }
     );
+
+    return res.data;
+}
+
+export async function getSearchedColleges(query: string) {
+    const res = await api.get<ApiResponseType<CollegeAPIResponseDataType[]>>(
+        `/store/search?q=${query}`
+    );
+
+    return res.data;
+}
+
+export type SearchCollegesSuggestionsAPIResponseDataType = {
+    uid: string;
+    name: string;
+    city: string;
+    cover_images?: string[];
+};
+
+export async function getSearchCollegesSuggestions(query: string) {
+    const res = await api.get<
+        ApiResponseType<SearchCollegesSuggestionsAPIResponseDataType[]>
+    >(`/store/search/suggestions?q=${query}`);
 
     return res.data;
 }

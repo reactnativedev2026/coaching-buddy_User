@@ -6,9 +6,14 @@ import CustomButton from "./CustomButton";
 type NotFoundPropsType = {
     heading: string;
     body: string;
+    isHideGoBack?: boolean;
 };
 
-export default function NotFound({ heading, body }: NotFoundPropsType) {
+export default function NotFound({
+    heading,
+    body,
+    isHideGoBack = false,
+}: NotFoundPropsType) {
     return (
         <View className="flex-1 items-center justify-center px-6 bg-secondary">
             <MaterialIcons
@@ -27,18 +32,20 @@ export default function NotFound({ heading, body }: NotFoundPropsType) {
                     "The page you’re looking for doesn’t exist or has been moved."}
             </Text>
 
-            <CustomButton
-                onPress={() => {
-                    if (router.canGoBack()) router.back();
-                    else router.replace("/home");
-                }}
-                className="px-6 py-3 rounded-lg bg-accent1"
-                debounce
-            >
-                <Text className="text-secondary text-sm font-pSemiBold">
-                    Go Back
-                </Text>
-            </CustomButton>
+            {!isHideGoBack && (
+                <CustomButton
+                    onPress={() => {
+                        if (router.canGoBack()) router.back();
+                        else router.replace("/home");
+                    }}
+                    className="px-6 py-3 rounded-lg bg-accent1"
+                    debounce
+                >
+                    <Text className="text-secondary text-sm font-pSemiBold">
+                        Go Back
+                    </Text>
+                </CustomButton>
+            )}
         </View>
     );
 }

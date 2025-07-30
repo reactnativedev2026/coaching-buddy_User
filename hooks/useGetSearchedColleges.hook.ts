@@ -1,20 +1,23 @@
-import { getCollegesByCategoryId } from "@/api/college.api";
+import { getSearchedColleges } from "@/api/college.api";
 import CollegeType from "@/types/College.type";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 
-export default function useGetCollegesByCategoryId(
-    isCategoriesLoading: boolean,
-    categoryId?: string
-) {
-    const [isLoading, setIsLoading] = useState(true);
+export default function useGetSearchedColleges() {
+    const { q } = useLocalSearchParams<{
+        q: string;
+    }>();
+    const [isLoading, setIsLoading] = useState(false);
     const [colleges, setColleges] = useState<CollegeType[]>([]);
 
     useEffect(() => {
-        if (isCategoriesLoading || categoryId == null) return;
-
         (async function () {
+            if (q == null || q.trim() === "") return;
+
+            setIsLoading(true);
+
             try {
-                const res = await getCollegesByCategoryId(categoryId);
+                const res = await getSearchedColleges(q);
 
                 if (res.data != null) {
                     const data = res.data.map((item) => {
@@ -90,13 +93,13 @@ export default function useGetCollegesByCategoryId(
                     setColleges(data);
                 }
             } catch (error) {
-                // console.error("Use get colleges by category id ", error);
+                // console.error("Use get searched colleges error ", error);
                 setColleges([]);
             } finally {
                 setIsLoading(false);
             }
         })();
-    }, [isCategoriesLoading, categoryId]);
+    }, [q]);
 
     return { isLoading, colleges };
 }

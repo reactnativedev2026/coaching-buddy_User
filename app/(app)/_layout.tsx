@@ -1,10 +1,12 @@
 import useAuth from "@/hooks/useAuth.hook";
+import useNetwork from "@/hooks/useNetwork.hook";
 import useSyncSavedColleges from "@/hooks/useSyncSavedColleges.hook";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Offline from "./offline";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -19,19 +21,27 @@ export default function AppLayout() {
     });
 
     const { isAuthLoading, isAuthenticated } = useAuth();
-
     const { isSyncSavedLoading } = useSyncSavedColleges(isAuthLoading);
+    const { isConnected } = useNetwork();
+
+    const isReady =
+        !isAuthLoading &&
+        !isSyncSavedLoading &&
+        (fontsLoaded || fontsError) &&
+        isConnected !== null;
 
     useEffect(() => {
-        if (isAuthLoading || isSyncSavedLoading) return;
-
-        if (fontsLoaded || fontsError) {
+        if (isReady) {
             SplashScreen.hideAsync();
         }
-    }, [isAuthLoading, isSyncSavedLoading, fontsLoaded, fontsError]);
+    }, [isReady]);
 
-    if (isAuthLoading || isSyncSavedLoading || (!fontsLoaded && !fontsError)) {
+    if (!isReady) {
         return null;
+    }
+
+    if (isConnected === false) {
+        return <Offline />;
     }
 
     return (

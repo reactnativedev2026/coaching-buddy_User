@@ -134,6 +134,7 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
             <CustomHeader
                 title={`${getCapitalizedText(categoryName)} - Colleges`}
             />
+
             <View
                 style={{
                     paddingHorizontal: horizontalPadding,

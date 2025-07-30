@@ -5,6 +5,7 @@ import { setSaved as setSavedRedux } from "@/redux/slices/save.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import SavedType from "@/types/Saved.type";
 import { useEffect, useRef, useState } from "react";
+import useNetwork from "./useNetwork.hook";
 
 export default function useSyncSavedColleges(isAuthLoading: boolean) {
     const dispatch = useAppDispatch();
@@ -12,6 +13,7 @@ export default function useSyncSavedColleges(isAuthLoading: boolean) {
     const { saved } = useAppSelector((state) => state.saved);
     const isFirstRender = useRef(true);
     const [isSyncSavedLoading, setIsSyncSavedLoading] = useState(false);
+    const { isConnected } = useNetwork();
 
     useEffect(() => {
         (async () => {
@@ -30,6 +32,8 @@ export default function useSyncSavedColleges(isAuthLoading: boolean) {
     }, []);
 
     useEffect(() => {
+        if (isConnected == null || isConnected === false) return;
+
         if (isAuthLoading || !isAuthenticated) return;
 
         setIsSyncSavedLoading(true);
@@ -74,7 +78,7 @@ export default function useSyncSavedColleges(isAuthLoading: boolean) {
                 setIsSyncSavedLoading(false);
             }
         })();
-    }, [isAuthLoading, isAuthenticated]);
+    }, [isConnected, isAuthLoading, isAuthenticated]);
 
     useEffect(() => {
         if (isFirstRender.current) {

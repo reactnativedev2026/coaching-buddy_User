@@ -1,6 +1,7 @@
 import getAverageRating from "@/lib/getAverageRating";
 import getCapitalizedText from "@/lib/getCapitalizedText";
 import getImageURI from "@/lib/getImageURI";
+import { useAppSelector } from "@/redux/store";
 import CollegeType from "@/types/College.type";
 import { AntDesign } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -41,12 +42,16 @@ export default function HomeColleges({
 
 function CollegeItem({ college }: { college: CollegeType }) {
     const { width } = useWindowDimensions();
+    const { isAuthenticated } = useAppSelector((state) => state.user);
 
-    const { name, amountPaid, address, images } = college;
+    const { name, address, images } = college;
 
-    const averageRating = getAverageRating(
-        college.comments.map((item) => item.rating)
-    );
+    let averageRating: number = 0;
+
+    if (college.comments)
+        averageRating = getAverageRating(
+            college.comments.map((item) => item.rating)
+        );
 
     return (
         <CustomButton
@@ -56,7 +61,14 @@ function CollegeItem({ college }: { college: CollegeType }) {
             style={{
                 width: width / 2,
             }}
-            onPress={() => router.push(`/college/${college.id}`)}
+            onPress={() => {
+                if (!isAuthenticated) {
+                    router.push("/login");
+                    return;
+                }
+
+                router.push(`/college/${college.id}`);
+            }}
             debounce
         >
             <CustomImage

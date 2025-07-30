@@ -70,6 +70,7 @@ export default function Profile() {
                         />
                     }
                     title="My Booking"
+                    href={"/booking"}
                 />
 
                 <ProfileOption

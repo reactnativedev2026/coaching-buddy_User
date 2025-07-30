@@ -21,7 +21,7 @@ export default function useGetCollege() {
             try {
                 const res = await getCollege(id);
 
-                console.log(JSON.stringify(res.data));
+                // console.log(JSON.stringify(res.data));
 
                 if (res.data != null) {
                     const logoImages = res.data.images.logo.map(
@@ -57,7 +57,7 @@ export default function useGetCollege() {
                             nearBy: res.data.address.near_by,
                             pincode: res.data.address.pincode,
                         },
-                        comments: res.data.comments.map((item) => {
+                        comments: res.data.comments?.map((item) => {
                             return {
                                 id: item.uid,
                                 rating: item.rating,
@@ -80,7 +80,7 @@ export default function useGetCollege() {
                                 value: detail.value,
                             };
                         }),
-                        courses: res.data.products.map((product) => ({
+                        courses: res.data.products?.map((product) => ({
                             id: product.uid,
                             name: product.name,
                             price: product.price,

@@ -10,8 +10,7 @@ export const handleApiError = async (error: any) => {
         const { status, data } = error.response;
 
         // console.log(error.config.url);
-
-        console.log(status, data);
+        // console.log(status, data);
 
         const message =
             data?.message ||

@@ -1,4 +1,5 @@
 import getCapitalizedText from "@/lib/getCapitalizedText";
+import { useAppSelector } from "@/redux/store";
 import CategoryType from "@/types/Category.type";
 import { router } from "expo-router";
 import { FlatList, Text, View } from "react-native";
@@ -45,14 +46,21 @@ function CategoryItem({
     category: CategoryType;
     isSelected: boolean;
 }) {
+    const { isAuthenticated } = useAppSelector((state) => state.user);
+
     return (
         <CustomButton
             className={`px-4 py-2 rounded-full  ${isSelected ? "bg-accent1/10" : "bg-primary/10"}`}
-            onPress={() =>
+            onPress={() => {
+                if (!isAuthenticated) {
+                    router.push("/login");
+                    return;
+                }
+
                 router.push(
                     `/list/${category.id}?categoryName=${category.name}`
-                )
-            }
+                );
+            }}
             debounce
         >
             <Text

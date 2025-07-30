@@ -12,6 +12,7 @@ module.exports = {
                 secondary: "#fff",
                 accent1: "#006EFF",
                 accent2: "#EB001B",
+                accent3: "#22C55E",
             },
             fontFamily: {
                 pLight: ["Poppins-Light", "sans-serif"],

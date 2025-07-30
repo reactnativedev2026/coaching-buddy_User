@@ -1,11 +1,15 @@
 import { addComment, AddCommentReturnDataType } from "@/api/college.api";
+import { placeOrder } from "@/api/orders.api";
+import AlreadyBookedWithThisCourseModal from "@/components/AlreadyBookedThisCouseModal/AlreadyBookedThisCourseModal";
 import CommentRateModal from "@/components/CommentRateModal/CommentRateModal";
 import CustomButton from "@/components/common/CustomButton";
 import CustomImage from "@/components/common/CustomImage";
 import HTMLText from "@/components/common/HTMLText";
 import ImagesCarousel from "@/components/common/ImagesCarousel/ImagesCarousel";
 import Loader from "@/components/common/Loader";
+import NotFound from "@/components/common/NotFound";
 import Ratings from "@/components/common/Ratings";
+import PlaceOrderConfirmationModal from "@/components/PlaceOrderConfirmationModal/PlaceOrderConfirmationModal";
 import SaveButton from "@/components/SaveButton/SaveButton";
 import useGetCollege from "@/hooks/useGetCollege.hook";
 import errorToast from "@/lib/errorToast";
@@ -57,9 +61,12 @@ export default function College() {
         "Courses",
     ];
 
-    const averageRating = getAverageRating(
-        college.comments.map((item) => item.rating)
-    );
+    let averageRating = 0;
+
+    if (college.comments != null)
+        averageRating = getAverageRating(
+            college.comments.map((item) => item.rating)
+        );
 
     const collegeCategory = college.categories.at(-1)!;
 
@@ -72,7 +79,7 @@ export default function College() {
             return {
                 ...prev,
                 comments: [
-                    ...prev.comments,
+                    ...(prev.comments || []),
                     {
                         ...commentData,
                         userName: user.name!,
@@ -105,9 +112,11 @@ export default function College() {
 
                                     <Text className="text-primary/50 text-sm font-pSemiBold mt-1">
                                         {averageRating} (
-                                        {getFormattedReviewsCount(
-                                            college.comments
-                                        )}
+                                        {college.comments != null
+                                            ? getFormattedReviewsCount(
+                                                  college.comments
+                                              )
+                                            : null}
                                         )
                                     </Text>
                                 </View>
@@ -134,10 +143,18 @@ export default function College() {
                                 {getCapitalizedText(college.name)}
                             </Text>
 
-                            <Text className="text-primary/50 font-pSemiBold text-sm">
-                                {college.address.area}, {college.address.city},
-                                India
-                            </Text>
+                            <View className="flex-row">
+                                <Ionicons
+                                    name="location-outline"
+                                    size={16}
+                                    color={"#999"}
+                                />
+
+                                <Text className="text-primary/50 font-pSemiBold text-sm">
+                                    {college.address.area},{" "}
+                                    {college.address.city}, India
+                                </Text>
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -420,9 +437,12 @@ function Review({
     const [isCommentRateModalVisible, setIsCommentRateModalVisible] =
         useState(false);
     const { user } = useAppSelector((state) => state.user);
-    const hasAlreadyCommented = college.comments.some(
-        (comment) => comment.userId === user?.id
-    );
+    let hasAlreadyCommented = false;
+
+    if (college.comments != null)
+        hasAlreadyCommented = college.comments.some(
+            (comment) => comment.userId === user?.id
+        );
     const [isLoading, setIsLoading] = useState(false);
 
     async function handleComment(rating: number, comment: string) {
@@ -453,6 +473,15 @@ function Review({
             setIsLoading(false);
         }
     }
+
+    if (college?.comments == null || college.comments.length === 0)
+        return (
+            <NotFound
+                heading="No reviews found!"
+                body="Be the first to give review"
+                isHideGoBack
+            />
+        );
 
     return (
         <View className="px-4 py-6 gap-4">
@@ -535,19 +564,70 @@ function Review({
 
 function Courses({ college }: { college: CollegeType }) {
     const [selectedCategory, setSelectedCategory] = useState(
-        college.courses[0].category
+        college?.courses?.[0]?.category ?? ""
     );
+    const [isPlaceOrderLoading, setIsPlaceOrderLoading] = useState(false);
+    const [
+        isPlaceOrderConfirmationModalVisibile,
+        setIsPlaceOrderConfirmationModalVisible,
+    ] = useState(false);
+    const [
+        isAlreadyBookedThisCourseModalVisible,
+        setIsAlreadyBookedThisCourseModalVisible,
+    ] = useState(false);
+
+    const [orderProcessingCourseId, setOrderProcessingCourseId] = useState<
+        string | null
+    >(null);
+
     const courses: string[] = [];
 
-    college.courses.forEach((item) => {
-        if (!courses.includes(item.category)) {
-            courses.push(item.category);
-        }
-    });
+    if (college.courses != null)
+        college.courses.forEach((item) => {
+            if (!courses.includes(item.category)) {
+                courses.push(item.category);
+            }
+        });
 
-    const displayCourses = college.courses.filter(
-        (course) => course.category === selectedCategory
-    );
+    let displayCourses: CollegeType["courses"];
+
+    if (college.courses != null)
+        displayCourses = college.courses.filter(
+            (course) => course.category === selectedCategory
+        );
+
+    async function handlePlaceOrder() {
+        if (orderProcessingCourseId == null) return;
+
+        setIsPlaceOrderLoading(true);
+
+        try {
+            const res = await placeOrder(orderProcessingCourseId);
+
+            successToast(res.message);
+        } catch (error: any) {
+            // console.error("place order error ", error);
+
+            if (
+                error?.response?.data?.message ===
+                "You have already booked this course!"
+            ) {
+                setIsAlreadyBookedThisCourseModalVisible(true);
+            }
+        } finally {
+            setIsPlaceOrderConfirmationModalVisible(false);
+            setIsPlaceOrderLoading(false);
+        }
+    }
+
+    if (college?.courses == null || college.courses.length === 0)
+        return (
+            <NotFound
+                heading="No courses found!"
+                body="College is providing any courses yet"
+                isHideGoBack
+            />
+        );
 
     return (
         <View className="px-4 py-6 gap-4">
@@ -615,7 +695,16 @@ function Courses({ college }: { college: CollegeType }) {
                                 )}
                             </View>
 
-                            <CustomButton className="px-4 py-2 rounded-lg bg-accent1 self-start">
+                            <CustomButton
+                                className="px-4 py-2 rounded-lg bg-accent1 self-start"
+                                onPress={() => {
+                                    setIsPlaceOrderConfirmationModalVisible(
+                                        true
+                                    );
+                                    setOrderProcessingCourseId(item.id);
+                                }}
+                                disabled={isPlaceOrderLoading}
+                            >
                                 <Text className="text-secondary text-sm font-pSemiBold">
                                     Book Now
                                 </Text>
@@ -623,6 +712,23 @@ function Courses({ college }: { college: CollegeType }) {
                         </View>
                     </View>
                 )}
+            />
+
+            <PlaceOrderConfirmationModal
+                isVisible={isPlaceOrderConfirmationModalVisibile}
+                handleModalClose={() => {
+                    setOrderProcessingCourseId(null);
+                    setIsPlaceOrderConfirmationModalVisible(false);
+                }}
+                disabled={isPlaceOrderLoading}
+                handlePlaceOrder={handlePlaceOrder}
+            />
+
+            <AlreadyBookedWithThisCourseModal
+                isVisible={isAlreadyBookedThisCourseModalVisible}
+                handleModalClose={() =>
+                    setIsAlreadyBookedThisCourseModalVisible(false)
+                }
             />
         </View>
     );

@@ -9,7 +9,7 @@ import CustomImage from "../common/CustomImage";
 import SearchBar from "../common/SearchBar";
 
 export default function HomeHeader() {
-    const { user } = useAppSelector((state) => state.user);
+    const { user, isAuthenticated } = useAppSelector((state) => state.user);
 
     return (
         <View className="bg-accent1 px-4 py-6 gap-4">
@@ -25,7 +25,14 @@ export default function HomeHeader() {
                 </View>
 
                 <CustomButton
-                    onPress={() => router.push("/profile")}
+                    onPress={() => {
+                        if (!isAuthenticated) {
+                            router.push("/login");
+                            return;
+                        }
+
+                        router.push("/profile");
+                    }}
                     debounce
                     debounceTime={2000}
                 >

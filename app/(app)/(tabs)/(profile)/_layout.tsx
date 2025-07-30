@@ -11,7 +11,10 @@ export default function ProfileLayout() {
 
             <Stack.Screen
                 name="update-profile"
-                options={{ title: "My Profile" }}
+                options={{
+                    title: "Update Profile",
+                    header: () => <CustomHeader title="Update Profile" />,
+                }}
             />
         </Stack>
     );
