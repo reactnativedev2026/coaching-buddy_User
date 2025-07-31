@@ -4,6 +4,7 @@ import CategoryType from "@/types/Category.type";
 import { router } from "expo-router";
 import { FlatList, Text, View } from "react-native";
 import CustomButton from "../common/CustomButton";
+import NotFound from "../common/NotFound";
 
 type HomeCategoryPropsType = {
     isLoading: boolean;
@@ -15,6 +16,15 @@ export default function HomeCategory({
     parentCategories,
 }: HomeCategoryPropsType) {
     const skeletonCategories = Array(10).fill(1);
+
+    if (!isLoading && parentCategories.length === 0)
+        return (
+            <NotFound
+                heading="Categories not found!"
+                body="There are currently no categories."
+                isHideGoBack
+            />
+        );
 
     return (
         <View>

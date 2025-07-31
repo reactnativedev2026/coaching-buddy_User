@@ -9,18 +9,30 @@ import { router } from "expo-router";
 import { FlatList, Text, useWindowDimensions, View } from "react-native";
 import CustomButton from "../common/CustomButton";
 import CustomImage from "../common/CustomImage";
+import NotFound from "../common/NotFound";
 import SaveButton from "../SaveButton/SaveButton";
 
 type HomeCollegesPropsType = {
     isLoading: boolean;
     colleges: CollegeType[];
+    isCategoryFound: boolean;
 };
 
 export default function HomeColleges({
     isLoading,
     colleges,
+    isCategoryFound,
 }: HomeCollegesPropsType) {
     const skeletonColleges = Array(10).fill(1);
+
+    if (isCategoryFound && !isLoading && colleges.length === 0)
+        return (
+            <NotFound
+                heading="No colleges found!"
+                body="There are currently no colleges for selected category."
+                isHideGoBack
+            />
+        );
 
     return (
         <View>

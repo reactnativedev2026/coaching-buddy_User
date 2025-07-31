@@ -25,6 +25,7 @@ export default function Home() {
                 <HomeColleges
                     isLoading={isCollegesLoading}
                     colleges={colleges}
+                    isCategoryFound={!isLoading && parentCategories.length > 0}
                 />
 
                 <HomeSavedColleges />

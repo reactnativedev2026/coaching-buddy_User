@@ -6,7 +6,7 @@ export default function useGetCollegesByCategoryId(
     isCategoriesLoading: boolean,
     categoryId?: string
 ) {
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [colleges, setColleges] = useState<CollegeType[]>([]);
 
     useEffect(() => {
@@ -14,6 +14,8 @@ export default function useGetCollegesByCategoryId(
 
         (async function () {
             try {
+                setIsLoading(true);
+
                 const res = await getCollegesByCategoryId(categoryId);
 
                 if (res.data != null) {
