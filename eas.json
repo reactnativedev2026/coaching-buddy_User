@@ -11,7 +11,7 @@
         "preview": {
             "distribution": "internal",
             "env": {
-                "EXPO_PUBLIC_SERVER_URL": "https://www.coachingbuddy.co.in/api",
+                "EXPO_PUBLIC_SERVER_URL": "https://coachingbuddy.co.in/api",
                 "EXPO_PUBLIC_AUTH_TOKEN_STORAGE_KEY": "COACHING_BUDDY_AUTH_TOKEN",
                 "EXPO_PUBLIC_SAVED_STORAGE_KEY": "COACHING_BUDDY_SAVED",
                 "EXPO_PUBLIC_RECENT_SEARCHES_STORAGE_KEY": "COACHING_BUDDY_RECENT_SEARCHES",

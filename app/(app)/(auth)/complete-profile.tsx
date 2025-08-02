@@ -9,11 +9,7 @@ import setAuthToken from "@/lib/setAuthToken";
 import successToast from "@/lib/successToast";
 import { nameValidation, phoneNumberValidation } from "@/lib/validation";
 import content from "@/locales/en/completeYourProfile.json";
-import {
-    setIsAuthenticated,
-    setIsLoading,
-    setUser,
-} from "@/redux/slices/user.slice";
+import { setIsLoading, setUser } from "@/redux/slices/user.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import AvatarType from "@/types/Avatar.type";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -74,9 +70,11 @@ export default function CompleteYourProfile() {
             return false;
         }
 
-        if (!phoneNumberValidation.regex.test(userData.phone)) {
-            errorToast(phoneNumberValidation.message1);
-            return false;
+        if (userData.phone !== "") {
+            if (!phoneNumberValidation.regex.test(userData.phone)) {
+                errorToast(phoneNumberValidation.message1);
+                return false;
+            }
         }
 
         if (userData.avatarName == null) {
@@ -109,7 +107,6 @@ export default function CompleteYourProfile() {
                 dispatch(setUser(res.data.user));
 
                 await setAuthToken(res.data.token);
-                dispatch(setIsAuthenticated(true));
 
                 router.replace("/account-success");
             }

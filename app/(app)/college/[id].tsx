@@ -45,12 +45,7 @@ export default function College() {
     const [tab, setTab] = useState<CollegeDetailsTabsType>("Description");
     const { user } = useAppSelector((state) => state.user);
 
-    if (isLoading)
-        return (
-            <View className="flex-1 bg-secondary items-center justify-center">
-                <Loader />
-            </View>
-        );
+    if (isLoading) return <Loader fullscreen />;
 
     if (college == null) return null;
 

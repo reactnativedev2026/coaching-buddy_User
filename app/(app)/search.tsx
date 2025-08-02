@@ -122,11 +122,7 @@ export default function Search() {
 
                 <RecentSearches />
 
-                {isLoading && (
-                    <View className="flex-1 items-center justify-center">
-                        <Loader />
-                    </View>
-                )}
+                {isLoading && <Loader fullscreen />}
 
                 {colleges.length === 0 ? (
                     <NotFound heading="Not Found!" body="No colleges found!" />
@@ -361,9 +357,7 @@ function SearchSuggestionsList({
     return (
         <View className="absolute top-full w-full bg-secondary rounded-lg shadow-md z-10 max-h-[30vh] py-4">
             {loading ? (
-                <View className="p-4 items-center justify-center">
-                    <Loader />
-                </View>
+                <Loader />
             ) : (
                 <ScrollView showsVerticalScrollIndicator={false}>
                     {suggestions.map((item) => (

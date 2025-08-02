@@ -68,9 +68,11 @@ export default function UpdateProfile() {
             return false;
         }
 
-        if (!phoneNumberValidation.regex.test(userData.phone)) {
-            errorToast(phoneNumberValidation.message1);
-            return false;
+        if (userData.phone !== "") {
+            if (!phoneNumberValidation.regex.test(userData.phone)) {
+                errorToast(phoneNumberValidation.message1);
+                return false;
+            }
         }
 
         if (userData.avatarName == null) {

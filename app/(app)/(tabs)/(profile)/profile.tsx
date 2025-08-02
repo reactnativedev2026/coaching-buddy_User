@@ -6,7 +6,6 @@ import { setIsAuthenticated, setUser } from "@/redux/slices/user.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { router } from "expo-router";
 import { ScrollView, Text, View } from "react-native";
 
 export default function Profile() {
@@ -18,7 +17,6 @@ export default function Profile() {
 
         dispatch(setUser(null));
         dispatch(setIsAuthenticated(false));
-        router.replace("/home");
     }
 
     if (user == null) return null;

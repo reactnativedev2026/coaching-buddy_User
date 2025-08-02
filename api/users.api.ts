@@ -46,7 +46,7 @@ type SignUpParamsType = {
 };
 
 export async function signUp(data: SignUpParamsType) {
-    const res = await api.put<
+    const res = await api.post<
         ApiResponseType<{
             user: UserType;
             token: string;

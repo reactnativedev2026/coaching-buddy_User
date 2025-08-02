@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 type UserStateType = {
     user: UserType | null;
     isAuthenticated: boolean;
+    isOnboarding: boolean;
     isLoading: boolean;
 };
 
@@ -14,6 +15,7 @@ type SetUserActionType = {
 const initialState: UserStateType = {
     user: null,
     isAuthenticated: false,
+    isOnboarding: true,
     isLoading: false,
 };
 
@@ -32,8 +34,13 @@ const userSlice = createSlice({
         setIsLoading(state, action: { payload: boolean }) {
             state.isLoading = action.payload;
         },
+
+        setIsOnboarding(state, action: { payload: boolean }) {
+            state.isOnboarding = action.payload;
+        },
     },
 });
 
 export default userSlice.reducer;
-export const { setUser, setIsAuthenticated, setIsLoading } = userSlice.actions;
+export const { setUser, setIsAuthenticated, setIsLoading, setIsOnboarding } =
+    userSlice.actions;

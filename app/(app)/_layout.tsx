@@ -1,6 +1,8 @@
+import Loader from "@/components/common/Loader";
 import useAuth from "@/hooks/useAuth.hook";
 import useNetwork from "@/hooks/useNetwork.hook";
 import useSyncSavedColleges from "@/hooks/useSyncSavedColleges.hook";
+import { useAppSelector } from "@/redux/store";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -20,9 +22,12 @@ export default function AppLayout() {
         "Poppins-ExtraBold": require("../../assets/fonts/Poppins-ExtraBold.ttf"),
     });
 
-    const { isAuthLoading, isAuthenticated } = useAuth();
+    const { isAuthLoading } = useAuth();
     const { isSyncSavedLoading } = useSyncSavedColleges(isAuthLoading);
     const { isConnected } = useNetwork();
+    const { isAuthenticated, isOnboarding } = useAppSelector(
+        (state) => state.user
+    );
 
     const isReady =
         !isAuthLoading &&
@@ -37,7 +42,7 @@ export default function AppLayout() {
     }, [isReady]);
 
     if (!isReady) {
-        return null;
+        return <Loader fullscreen />;
     }
 
     if (isConnected === false) {
@@ -51,7 +56,7 @@ export default function AppLayout() {
                     headerShown: false,
                 }}
             >
-                <Stack.Screen name="index" />
+                <Stack.Screen name={isOnboarding ? "index" : "(tabs)"} />
 
                 <Stack.Protected guard={!isAuthenticated}>
                     <Stack.Screen name="(auth)" />

@@ -17,12 +17,7 @@ export default function MyBookings() {
     const { isLoading, orders, setOrders } = useGetUserOrders();
     const [isCancelOrderLoading, setIsCancelOrderLoading] = useState(false);
 
-    if (isLoading)
-        return (
-            <View className="flex-1 bg-secondary items-center justify-center">
-                <Loader />
-            </View>
-        );
+    if (isLoading) return <Loader fullscreen />;
 
     if (orders.length === 0)
         return (

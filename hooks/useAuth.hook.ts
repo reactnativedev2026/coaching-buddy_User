@@ -1,13 +1,12 @@
 import { auth } from "@/api/users.api";
 import { setIsAuthenticated, setUser } from "@/redux/slices/user.slice";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { useAppDispatch } from "@/redux/store";
 import { useEffect, useState } from "react";
 import useNetwork from "./useNetwork.hook";
 
 export default function useAuth() {
     const [isAuthLoading, setIsAuthLoading] = useState(false);
     const dispatch = useAppDispatch();
-    const { isAuthenticated } = useAppSelector((state) => state.user);
     const { isConnected } = useNetwork();
 
     useEffect(() => {
@@ -33,5 +32,5 @@ export default function useAuth() {
         })();
     }, [isConnected]);
 
-    return { isAuthLoading, isAuthenticated };
+    return { isAuthLoading };
 }

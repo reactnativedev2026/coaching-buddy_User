@@ -18,7 +18,7 @@ export default function SearchBar({
 }: SearchBarPropsType) {
     const pathname = usePathname();
 
-    if (pathname === "/home")
+    if (pathname !== "/search")
         return (
             <CustomButton
                 className="bg-secondary flex-row items-center gap-2 px-4 border-t-hairline border-l-hairline border-r-hairline border-primary shadow-md rounded-xl relative"

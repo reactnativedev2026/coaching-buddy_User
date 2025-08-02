@@ -1,15 +1,21 @@
 import CustomButton from "@/components/common/CustomButton";
+import CustomImage from "@/components/common/CustomImage";
+import IMAGES from "@/constants/images.contant";
 import content from "@/locales/en/accountSuccess.json";
-import { useAppSelector } from "@/redux/store";
+import { setIsAuthenticated } from "@/redux/slices/user.slice";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 import Feather from "@expo/vector-icons/Feather";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { router } from "expo-router";
 import { Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function AccountSuccess() {
     const { user } = useAppSelector((state) => state.user);
+    const dispatch = useAppDispatch();
+
+    function handleContinue() {
+        dispatch(setIsAuthenticated(true));
+    }
 
     return (
         <ScrollView contentContainerClassName="min-h-full flex-1 bg-secondary pt-20 pb-4 justify-between">
@@ -30,11 +36,13 @@ export default function AccountSuccess() {
 
                 <CustomButton
                     className="px-6 py-4 flex-row items-center gap-4"
-                    onPress={() => router.push("/home")}
+                    onPress={handleContinue}
                 >
-                    <View className="w-16 aspect-square rounded-full bg-accent1/50 p-2 items-center justify-center">
-                        <FontAwesome5 name="user-alt" size={24} color="#000" />
-                    </View>
+                    <CustomImage
+                        image={IMAGES[user?.avatarName ?? "EduBee"]}
+                        className="w-20 aspect-square rounded-full bg-primary/10"
+                        imageClassName="w-full h-full"
+                    />
 
                     <View className="">
                         <Text className="text-primary font-pSemiBold text-sm underline">
@@ -57,7 +65,7 @@ export default function AccountSuccess() {
             <View className="border-t-2 border-primary/10 py-4">
                 <CustomButton
                     className="bg-accent1 rounded-full items-center justify-center px-6 py-3 w-11/12 self-center mt-2"
-                    onPress={() => router.push("/home")}
+                    onPress={handleContinue}
                 >
                     <Text className="text-secondary font-pSemiBold">
                         {content.buttonText}

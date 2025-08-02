@@ -17,12 +17,7 @@ import { FlatList, Text, useWindowDimensions, View } from "react-native";
 export default function List() {
     const { isLoading, categories, colleges } = useGetSubCategoriesOrColleges();
 
-    if (isLoading)
-        return (
-            <View className="flex-1 items-center justify-center">
-                <Loader />
-            </View>
-        );
+    if (isLoading) return <Loader fullscreen />;
 
     if (categories.length) return <Categories categories={categories} />;
 

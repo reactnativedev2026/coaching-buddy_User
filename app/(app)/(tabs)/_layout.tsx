@@ -19,7 +19,7 @@ export default function TabsLayout() {
     }, [segments, isAuthenticated]);
 
     if (!isAuthenticated && segments[1] === "(tabs)" && segments[2] !== "home")
-        return <Loader />;
+        return <Loader fullscreen />;
 
     return (
         <Tabs
@@ -35,7 +35,7 @@ export default function TabsLayout() {
             <Tabs.Screen
                 name="(profile)"
                 options={{
-                    tabBarLabel: "Home",
+                    tabBarLabel: "Profile",
                 }}
             />
         </Tabs>

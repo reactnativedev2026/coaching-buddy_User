@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { BackHandler } from "react-native";
 
 export default function AuthLayout() {
-    const { isAuthenticated } = useAppSelector((state) => state.user);
     const pathname = usePathname();
+    const { isAuthenticated } = useAppSelector((state) => state.user);
 
     useEffect(() => {
         function backButtonPressHandler() {
@@ -34,6 +34,7 @@ export default function AuthLayout() {
                 <Stack.Screen name="login" />
                 <Stack.Screen name="verify-otp" />
                 <Stack.Screen name="complete-profile" />
+                <Stack.Screen name="account-success" />
             </Stack.Protected>
         </Stack>
     );

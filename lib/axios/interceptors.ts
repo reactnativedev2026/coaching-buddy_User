@@ -11,7 +11,9 @@ export const handleApiError = async (error: any) => {
         const { status, data } = error.response;
 
         // console.log(error.config.url);
+
         // console.log(status, data);
+
         // errorToast(
         //     error.config.url,
         //     `status: ${status} - data: ${data.message}`
@@ -36,10 +38,7 @@ export const handleApiError = async (error: any) => {
             errorToast("Error", message);
         }
     } else if (error.request) {
-        // Request was made but no response received
-        errorToast(`Full URL: ${error.config.baseURL}${error.config.url}`);
-
-        // errorToast("Network Error", "Unable to connect to the server.");
+        errorToast("Network Error", "Unable to connect to the server.");
     } else {
         errorToast("Error", error.message || "Unknown error");
     }

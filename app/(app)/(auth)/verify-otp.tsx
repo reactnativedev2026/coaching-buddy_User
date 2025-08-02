@@ -14,7 +14,7 @@ import {
 } from "@/redux/slices/user.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, ScrollView, Text, View } from "react-native";
 
 // 30 seconds
@@ -25,22 +25,30 @@ export default function VerifyOtp() {
     const [timer, setTimer] = useState(RESEND_TIME);
     const [isResendOTP, setIsResendOTP] = useState(true);
     const { user, isLoading } = useAppSelector((state) => state.user);
+    const startTimeRef = useRef<number | null>(null);
+    const [timerRestartKey, setTimerRestartKey] = useState(0);
 
     useEffect(() => {
-        if (timer === 0) return;
+        startTimeRef.current = Date.now();
 
-        const intervalId = setInterval(
-            () =>
-                setTimer((prev) => {
-                    if (prev - 1 === 0) clearInterval(intervalId);
+        const intervalId = setInterval(() => {
+            if (startTimeRef.current === null) return;
 
-                    return prev - 1;
-                }),
-            1000
-        );
+            const elapsed = Math.floor(
+                (Date.now() - startTimeRef.current) / 1000
+            );
+            const remaining = RESEND_TIME - elapsed;
+
+            if (remaining <= 0) {
+                clearInterval(intervalId);
+                setTimer(0);
+            } else {
+                setTimer(remaining);
+            }
+        }, 1000);
 
         return () => clearInterval(intervalId);
-    }, [timer]);
+    }, [timerRestartKey]);
 
     async function handleVerifyOtp(otp: string) {
         if (user == null) return;
@@ -61,7 +69,11 @@ export default function VerifyOtp() {
                 }
 
                 if (res.data.isNew) router.replace("/complete-profile");
-                else router.replace("/home");
+                else {
+                    // setTimeout(() => {
+                    //     router.replace("/home");
+                    // }, 100);
+                }
             }
         } catch (error) {
             // console.error("Verify OTP error ", error);
@@ -73,6 +85,7 @@ export default function VerifyOtp() {
     async function handleResendOTP() {
         if (user == null) return;
 
+        setTimerRestartKey((prev) => prev + 1);
         setTimer(RESEND_TIME);
         setIsResendOTP(true);
 
