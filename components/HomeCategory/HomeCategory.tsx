@@ -1,9 +1,11 @@
 import getCapitalizedText from "@/lib/getCapitalizedText";
+import getImageURI from "@/lib/getImageURI";
 import { useAppSelector } from "@/redux/store";
 import CategoryType from "@/types/Category.type";
 import { router } from "expo-router";
-import { FlatList, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import CustomButton from "../common/CustomButton";
+import CustomImage from "../common/CustomImage";
 import NotFound from "../common/NotFound";
 
 type HomeCategoryPropsType = {
@@ -27,40 +29,24 @@ export default function HomeCategory({
         );
 
     return (
-        <View>
-            <FlatList
-                data={isLoading ? skeletonCategories : parentCategories}
-                contentContainerClassName="px-4"
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item, index }) => {
-                    if (isLoading) return <CategoryItemLoadingSkeleton />;
-
-                    return (
-                        <CategoryItem
-                            category={item}
-                            isSelected={index === 0}
-                        />
-                    );
-                }}
-                ItemSeparatorComponent={() => <View className="w-4" />}
-            />
+        <View className="flex-row flex-wrap justify-center gap-4 max-w-[80%] mx-auto">
+            {isLoading
+                ? skeletonCategories.map((item, i) => {
+                      return <CategoryItemLoadingSkeleton key={i} />;
+                  })
+                : parentCategories.map((item) => {
+                      return <CategoryItem category={item} key={item.id} />;
+                  })}
         </View>
     );
 }
 
-function CategoryItem({
-    category,
-    isSelected,
-}: {
-    category: CategoryType;
-    isSelected: boolean;
-}) {
+function CategoryItem({ category }: { category: CategoryType }) {
     const { isAuthenticated } = useAppSelector((state) => state.user);
 
     return (
         <CustomButton
-            className={`px-4 py-2 rounded-full  ${isSelected ? "bg-accent1/10" : "bg-primary/10"}`}
+            className={`w-20 items-center gap-2`}
             onPress={() => {
                 if (!isAuthenticated) {
                     router.push("/login");
@@ -73,9 +59,13 @@ function CategoryItem({
             }}
             debounce
         >
-            <Text
-                className={`text-xs font-pSemiBold  ${isSelected ? "text-accent1" : "text-primary"}`}
-            >
+            <CustomImage
+                image={{ uri: getImageURI(category.imagePath) }}
+                className="w-[90%] aspect-square items-center justify-center rounded-full"
+                imageClassName="w-full h-full"
+            />
+
+            <Text className={`text-xs font-pSemiBold text-center`}>
                 {getCapitalizedText(category.name)}
             </Text>
         </CustomButton>
@@ -84,6 +74,10 @@ function CategoryItem({
 
 function CategoryItemLoadingSkeleton() {
     return (
-        <View className="w-20 h-8 px-4 py-2 rounded-full bg-primary/10 animate-pulse" />
+        <View className="gap-1 items-center animate-pulse">
+            <View className="w-20 aspect-square px-4 py-2 rounded-full bg-primary/10" />
+
+            <View className="w-16 h-4 bg-primary/10 rounded-lg" />
+        </View>
     );
 }

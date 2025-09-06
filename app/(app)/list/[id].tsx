@@ -51,9 +51,7 @@ function Categories({ categories }: { categories: CategoryType[] }) {
 
     return (
         <>
-            <CustomHeader
-                title={`${getCapitalizedText(categoryName)} - Sub Categories`}
-            />
+            <CustomHeader title={`${getCapitalizedText(categoryName)}`} />
 
             <View
                 style={{
@@ -126,9 +124,7 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
 
     return (
         <>
-            <CustomHeader
-                title={`${getCapitalizedText(categoryName)} - Colleges`}
-            />
+            <CustomHeader title={`${getCapitalizedText(categoryName)}`} />
 
             <View
                 style={{

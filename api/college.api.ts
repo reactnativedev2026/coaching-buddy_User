@@ -62,7 +62,7 @@ export async function getCollege(id: string) {
 
 export async function getCollegesByCategoryId(categoryId: string) {
     const res = await api.get<ApiResponseType<CollegeAPIResponseDataType[]>>(
-        `/store?cid=${categoryId}`
+        `/store?cid=${categoryId}&status=1`
     );
 
     return res.data;
