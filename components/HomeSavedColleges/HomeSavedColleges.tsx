@@ -32,7 +32,7 @@ export default function HomeSavedColleges() {
                         <MaterialIcons
                             name="arrow-forward"
                             size={18}
-                            color="#006EFF"
+                            color="#0d9488"
                         />
                     </CustomButton>
                 )}

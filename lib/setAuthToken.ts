@@ -5,6 +5,6 @@ export default async function setAuthToken(token: string) {
     try {
         await AsyncStorage.setItem(envConfig.authTokenStorageKey, token);
     } catch (error) {
-        console.error("Error setting token in storage: ", error);
+        // console.error("Error setting token in storage: ", error);
     }
 }

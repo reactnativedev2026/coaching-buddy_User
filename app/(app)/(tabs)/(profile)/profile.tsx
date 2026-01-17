@@ -70,6 +70,17 @@ export default function Profile() {
                     title="My Booking"
                     href={"/booking"}
                 />
+                {/* <ProfileOption
+                    icon={
+                        <MaterialCommunityIcons
+                            name="bell-outline"
+                            size={26}
+                            color="black"
+                        />
+                    }
+                    title="Notification"
+                    href={"/notification"}
+                /> */}
 
                 <ProfileOption
                     icon={<AntDesign name="logout" size={24} color="black" />}

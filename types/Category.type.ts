@@ -3,6 +3,8 @@ type CategoryType = {
     name: string;
     parentId: string;
     imagePath: string;
+    showTag:number;
+    tag?:string
 };
 
 export default CategoryType;

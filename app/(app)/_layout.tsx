@@ -7,12 +7,15 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { StatusBar, useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Offline from "./offline";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function AppLayout() {
+      const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
     const [fontsLoaded, fontsError] = useFonts({
         "Poppins-Light": require("../../assets/fonts/Poppins-Light.ttf"),
         "Poppins-ExtraLight": require("../../assets/fonts/Poppins-ExtraLight.ttf"),
@@ -51,6 +54,10 @@ export default function AppLayout() {
 
     return (
         <SafeAreaView className="flex-1">
+            <StatusBar
+          backgroundColor={isDark ? "#1e1e1e" : "#ffffff"}
+          barStyle={isDark ? "light-content" : "dark-content"}
+        />
             <Stack
                 screenOptions={{
                     headerShown: false,

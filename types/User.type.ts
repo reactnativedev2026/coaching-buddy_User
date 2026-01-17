@@ -5,6 +5,10 @@ type UserType = {
     name?: string;
     email: string;
     phone?: string;
+    area?:string;
+    state?:string;
+    pincode?:string;
+    landmark?:string;
     avatarName?: AvatarType;
 };
 

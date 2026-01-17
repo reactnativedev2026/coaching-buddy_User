@@ -37,7 +37,7 @@ export default function Loader({
             <View className="w-20 h-20 rounded-2xl justify-center items-center shadow-lg bg-white/10 backdrop-blur-md">
                 <View className="rounded-2xl overflow-hidden">
                     <LinearGradient
-                        colors={["#006EFF", "#6C63FF"]}
+                        colors={["#0d9488", "#6C63FF"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         className="p-3 rounded-full"

@@ -14,7 +14,7 @@ export default function useSyncSavedColleges(isAuthLoading: boolean) {
     const isFirstRender = useRef(true);
     const [isSyncSavedLoading, setIsSyncSavedLoading] = useState(false);
     const { isConnected } = useNetwork();
-
+console.log(isConnected, isAuthLoading, isAuthenticated,"==============----------------")
     useEffect(() => {
         (async () => {
             try {
@@ -26,7 +26,7 @@ export default function useSyncSavedColleges(isAuthLoading: boolean) {
                     dispatch(setSavedRedux([]));
                 }
             } catch (e) {
-                console.error("Error loading local saved colleges:", e);
+                // console.error("Error loading local saved colleges:", e);
             }
         })();
     }, []);
@@ -42,7 +42,7 @@ export default function useSyncSavedColleges(isAuthLoading: boolean) {
             try {
                 const clientSaved = await getSaved();
                 let syncData: string[] = [];
-
+console.log(clientSaved,":::::::::::::CLIENT SAVED")
                 if (clientSaved != null) {
                     syncData = clientSaved.map((item) => item.id);
                 }

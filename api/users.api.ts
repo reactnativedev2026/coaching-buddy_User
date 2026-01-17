@@ -42,10 +42,17 @@ type SignUpParamsType = {
     email: string;
     name: string;
     phone?: string;
+    area:string;
+    state:string;
+    pincode:string;
+    landmark:string;
+    city:string;
     avatarName: string;
+    gender:string
 };
 
 export async function signUp(data: SignUpParamsType) {
+    console.log(data,"llllllllllllllllllllllllll")
     const res = await api.post<
         ApiResponseType<{
             user: UserType;

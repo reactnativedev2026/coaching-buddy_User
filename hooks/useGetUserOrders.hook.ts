@@ -21,46 +21,42 @@ export default function useGetUserOrders() {
             try {
                 const res = await getUserOrders(user.id);
 
-                // console.log(JSON.stringify(res.data));
+                console.log(JSON.stringify(res.status));
 
                 if (res.data != null) {
-                    const ordersData: OrderType[] = res.data.orders.map(
-                        (order) => {
-                            return {
-                                id: order.uid,
-                                status: order.status,
-                                product: {
-                                    ...order.product,
-                                    selling_price: undefined,
-                                    sellingPrice: order.product.selling_price,
-                                    images: order.product.images.map(
-                                        (image) => image.path
-                                    ),
-                                },
-                                store: {
-                                    name: order.store.name,
-                                    address: {
-                                        ...order.store.address,
-                                        near_by: undefined,
-                                        nearBy: order.store.address.near_by,
-                                    },
-                                    comments: order.store.comments.map(
-                                        (comment) => {
-                                            return {
-                                                id: comment.uid,
-                                                rating: comment.rating,
-                                            };
-                                        }
-                                    ),
-                                },
-                            };
-                        }
-                    );
+                    console.log("dfsdsdsdsgfds")
+                  const ordersData: OrderType[] = res.data.orders.map((order: any) => ({
+  id: order.uid,
+  status: order.status,
+  product: {
+    ...order.product,
+    selling_price: undefined,
+    sellingPrice: order.product.selling_price,
+    images: Array.isArray(order.product.images)
+      ? order.product.images.map((image: any) => image.path)
+      : [],
+  },
+  store: {
+    name: order.store.name,
+    address: {
+      ...order.store.address,
+      near_by: undefined,
+      nearBy: order.store.address.near_by,
+    },
+    comments: Array.isArray(order.store.comments)
+      ? order.store.comments.map((comment: any) => ({
+          id: comment.uid,
+          rating: comment.rating,
+        }))
+      : [],
+  },
+}));
 
+console.log(ordersData,"APPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
                     setOrders(ordersData);
                 }
             } catch (error) {
-                // console.error("use get user orders error", error)
+                console.error("use get user orders error", error)
                 setOrders([]);
             } finally {
                 setIsLoading(false);

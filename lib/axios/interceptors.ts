@@ -20,7 +20,7 @@ export const handleApiError = async (error: any) => {
         // );
 
         const message = data?.message || data?.error || "Something went wrong!";
-
+console.log(message,status,"::::::::::::::",error?.config?.url)
         if (status === 401) {
             const token = await getAuthToken();
 
@@ -35,7 +35,7 @@ export const handleApiError = async (error: any) => {
         } else if (status === 500) {
             errorToast("Server Error", "Something went wrong on our side.");
         } else {
-            errorToast("Error", message);
+            errorToast("Oops!", message);
         }
     } else if (error.request) {
         errorToast("Network Error", "Unable to connect to the server.");

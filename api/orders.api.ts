@@ -43,7 +43,6 @@ export async function getUserOrders(userId: string) {
     const res = await api.get<
         ApiResponseType<{ orders: OrderAPIResponseDataType[] }>
     >(`/user/orders/${userId}`);
-
     return res.data;
 }
 

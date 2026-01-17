@@ -9,54 +9,60 @@ import CustomImage from "../common/CustomImage";
 import SaveButton from "../SaveButton/SaveButton";
 
 export default function SavedItem({ item }: { item: SavedType }) {
-    const { width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
-    return (
-        <CustomButton
-            className={
-                "flex-row items-center bg-secondary rounded-xl shadow-md border-2 border-primary/5 px-2 py-4 gap-2"
-            }
-            onPress={() =>
-                router.push(`/college/${item.id}` as RelativePathString)
-            }
-            debounce
+  return (
+    <CustomButton
+      className={
+        "flex-row items-center bg-secondary rounded-xl shadow-md border-2 border-primary/5 px-2 py-4 gap-2"
+      }
+      onPress={() => router.push(`/college/${item.id}` as RelativePathString)}
+      debounce
+    >
+      <CustomImage
+        image={{ uri: getImageURI(item.image) }}
+        className="aspect-square rounded-xl"
+        imageClassName="w-full h-full"
+        style={{
+          width: (width * 20) / 100,
+        }}
+      />
+
+      <View className="flex-1 gap-2">
+        <Text
+          className="text-primary font-pSemiBold leading-5"
+          numberOfLines={2}
+          ellipsizeMode="tail"
         >
-            <CustomImage
-                image={{ uri: getImageURI(item.image) }}
-                className="aspect-square rounded-xl"
-                imageClassName="w-full h-full"
-                style={{
-                    width: (width * 20) / 100,
-                }}
-            />
+          {getCapitalizedText(item.name)}
+        </Text>
 
-            <View className="flex-1 gap-2">
-                <Text className="text-primary font-pSemiBold leading-5">
-                    {getCapitalizedText(item.name)}
-                </Text>
+        <View className="flex-row justify-between items-start">
+          <View className="gap-2 flex-1 mr-2">
+            <Text
+              className="text-primary/50 text-sm font-pSemiBold mt-1"
+              numberOfLines={2}
+              ellipsizeMode="tail"
+            >
+              {getCapitalizedText(item.categoryName)}
+            </Text>
 
-                <View className="flex-row justify-between">
-                    <View className="gap-2">
-                        <Text className="text-primary/50 text-sm font-pSemiBold mt-1">
-                            {getCapitalizedText(item.categoryName)}
-                        </Text>
+            <View className="flex-row items-center">
+              <Ionicons name="location-sharp" size={16} color={"#000"} />
 
-                        <View className="flex-row items-center">
-                            <Ionicons
-                                name="location-sharp"
-                                size={16}
-                                color={"#000"}
-                            />
-
-                            <Text className="text-primary text-xs font-pSemiBold">
-                                {item.address.area}
-                            </Text>
-                        </View>
-                    </View>
-
-                    <SaveButton item={item} />
-                </View>
+              <Text
+                className="text-primary text-xs font-pSemiBold ml-1"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {item.address.area}
+              </Text>
             </View>
-        </CustomButton>
-    );
+          </View>
+
+          <SaveButton item={item} />
+        </View>
+      </View>
+    </CustomButton>
+  );
 }

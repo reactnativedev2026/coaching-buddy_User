@@ -1,4 +1,5 @@
 import { cancelOrder } from "@/api/orders.api";
+import ConfirmationModel from "@/components/common/ConfirmationModal";
 import CustomButton from "@/components/common/CustomButton";
 import CustomHeader from "@/components/common/CustomHeader";
 import CustomImage from "@/components/common/CustomImage";
@@ -15,8 +16,10 @@ import { FlatList, Text, View } from "react-native";
 
 export default function MyBookings() {
     const { isLoading, orders, setOrders } = useGetUserOrders();
+    console.log(orders,".............................................")
     const [isCancelOrderLoading, setIsCancelOrderLoading] = useState(false);
-
+const [cancelModelVisible, setCancelModelVisible] = useState(false)
+const [cancelBookingId, setCancelBookingId] = useState("")
     if (isLoading) return <Loader fullscreen />;
 
     if (orders.length === 0)
@@ -50,6 +53,8 @@ export default function MyBookings() {
             // console.error("cancel order error ", error);
         } finally {
             setIsCancelOrderLoading(false);
+            setCancelBookingId("")
+            setCancelModelVisible(false)
         }
     }
 
@@ -166,8 +171,11 @@ export default function MyBookings() {
                                 {item.status === "initiated" && (
                                     <CustomButton
                                         className="bg-accent2/10 items-center rounded-lg px-2 py-4 disabled:opacity-50"
-                                        onPress={() =>
-                                            handleCancelOrder(item.id)
+                                        onPress={() =>{
+                                            // handleCancelOrder(item.id)
+                                            setCancelModelVisible(true)
+                                            setCancelBookingId(item.id)
+                                        }
                                         }
                                         disabled={isCancelOrderLoading}
                                     >
@@ -181,6 +189,26 @@ export default function MyBookings() {
                     }}
                 />
             </View>
+               <ConfirmationModel
+                visible={cancelModelVisible}
+                title="Cancel Booking"
+                message="Are you sure you want to cancel ?"
+                confirmText="Yes"
+                cancelText="Cancel"
+                cancelButtonColor={"#EF4444"}
+                onConfirm={() => {
+                    handleCancelOrder(cancelBookingId);
+
+                }}
+                onCancel={() =>
+                    setCancelModelVisible(false)
+                }
+                titleColor={"#1E293B"}
+                messageColor={"#1E293B"}
+                blurIntensity={40}
+                animationType="fade"
+                confirmButtonColor={"#0d9488"}
+            />
         </View>
     );
 }

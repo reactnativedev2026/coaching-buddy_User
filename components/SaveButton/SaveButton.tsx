@@ -79,7 +79,7 @@ export default function SaveButton({
             <MaterialCommunityIcons
                 name="bookmark-minus"
                 size={24}
-                color={savedItem == null ? "#666" : "#006EFF"}
+                color={savedItem == null ? "#666" : "#0d9488"}
             />
         </CustomButton>
     );

@@ -9,7 +9,7 @@ import Toast, {
 const colors = {
     primary: "#000",
     secondary: "#fff",
-    accent1: "#006EFF", // info/success
+    accent1: "#0d9488", // info/success
     accent2: "#EB001B", // error
     text: "#333",
     subtext: "#666",

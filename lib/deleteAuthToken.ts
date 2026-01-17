@@ -5,6 +5,6 @@ export default async function deleteAuthToken() {
     try {
         await AsyncStorage.removeItem(envConfig.authTokenStorageKey);
     } catch (error) {
-        console.error("Error deleting token in storage: ", error);
+        // console.error("Error deleting token in storage: ", error);
     }
 }

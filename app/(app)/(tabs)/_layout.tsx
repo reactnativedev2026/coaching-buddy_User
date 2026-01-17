@@ -32,6 +32,8 @@ export default function TabsLayout() {
 
             <Tabs.Screen name="favorite" />
 
+            {/* <Tabs.Screen name="notification" /> */}
+
             <Tabs.Screen
                 name="(profile)"
                 options={{
