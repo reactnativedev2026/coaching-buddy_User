@@ -19,8 +19,6 @@ export default function useGetSubCategoriesOrColleges() {
             try {
                 const res = await getSubCategoriesOrStores(id);
 
-                console.log("data ", res.data);
-
                 if (res.data != null) {
                     if (
                         res.data.isSubCategories &&
