@@ -130,7 +130,7 @@ export default function ImagesCarousel({ images }: { images: string[] }) {
                 </Animated.ScrollView>
 
                 {/* Thumbnails */}
-                <View className="absolute bottom-2 w-4/5 self-center items-center justify-center rounded-xl overflow-hidden bg-secondary p-1">
+                <View className="absolute bottom-2 max-w-[80%] w-auto self-center items-center justify-center rounded-xl overflow-hidden bg-secondary p-1">
                     <FlatList
                         ref={thumbnailRef}
                         data={images}
