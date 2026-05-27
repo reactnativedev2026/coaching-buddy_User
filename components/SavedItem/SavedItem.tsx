@@ -37,7 +37,7 @@ export default function SavedItem({ item }: { item: SavedType }) {
           {getCapitalizedText(item.name)}
         </Text>
 
-        <View className="flex-row justify-between items-start">
+        <View className="flex-row justify-between items-center">
           <View className="gap-2 flex-1 mr-2">
             <Text
               className="text-primary/50 text-sm font-pSemiBold mt-1"
@@ -48,10 +48,10 @@ export default function SavedItem({ item }: { item: SavedType }) {
             </Text>
 
             <View className="flex-row items-center">
-              <Ionicons name="location-sharp" size={16} color={"#000"} />
+              <Ionicons name="location-sharp" size={16} color={"#ec0909"} />
 
               <Text
-                className="text-primary text-xs font-pSemiBold ml-1"
+                className="text-red-500 text-xs font-pSemiBold ml-1"
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
@@ -60,7 +60,9 @@ export default function SavedItem({ item }: { item: SavedType }) {
             </View>
           </View>
 
-          <SaveButton item={item} />
+          <View className="justify-center items-center self-center mb-8">
+            <SaveButton item={item} />
+          </View>
         </View>
       </View>
     </CustomButton>

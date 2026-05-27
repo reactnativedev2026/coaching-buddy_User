@@ -22,9 +22,9 @@ import { useAppSelector } from "@/redux/store";
 import CollegeType from "@/types/College.type";
 import {
     AntDesign,
-    FontAwesome,
     FontAwesome6,
     Ionicons,
+    MaterialCommunityIcons
 } from "@expo/vector-icons";
 import Entypo from "@expo/vector-icons/Entypo";
 import { router } from "expo-router";
@@ -94,22 +94,42 @@ export default function College() {
                 <ImagesCarousel images={college.images.banner} />
 
                 <View className="px-4 py-6">
-                    <View className="gap-4">
+                    <View
+                        className="bg-white rounded-3xl p-5 gap-5"
+                        style={{
+                            elevation: 4,
+                            shadowColor: "#000",
+                            shadowOffset: {
+                                width: 0,
+                                height: 2,
+                            },
+                            shadowOpacity: 0.08,
+                            shadowRadius: 5,
+                        }}
+                    >
+
+                        {/* TOP ROW */}
                         <View className="flex-row items-center justify-between">
+
+                            {/* RATING */}
                             {averageRating > 0 ? (
-                                <View className="flex-row items-center">
+                                <View className="flex-row items-center gap-1 bg-orange-50 px-3 py-2 rounded-full">
                                     <AntDesign
                                         name="star"
                                         size={16}
                                         color="orange"
                                     />
 
-                                    <Text className="text-primary/50 text-sm font-pSemiBold mt-1">
-                                        {averageRating} (
+                                    <Text className="text-orange-500 text-sm font-pSemiBold">
+                                        {averageRating}
+                                    </Text>
+
+                                    <Text className="text-primary/40 text-sm font-pMedium">
+                                        (
                                         {college.comments != null
                                             ? getFormattedReviewsCount(
-                                                  college.comments,
-                                              )
+                                                college.comments,
+                                            )
                                             : null}
                                         )
                                     </Text>
@@ -118,33 +138,40 @@ export default function College() {
                                 <View />
                             )}
 
+                            {/* CATEGORY CHIP */}
                             <CustomButton
-                                className="bg-primary/5 px-2 py-1 rounded-lg"
+                                className="bg-accent1/10 px-4 py-2 rounded-full"
                                 onPress={() =>
                                     router.push(
                                         `/list/${collegeCategory.id}?categoryName=${collegeCategory.name}`,
                                     )
                                 }
                             >
-                                <Text className="text-accent1/85 text-sm font-pSemiBold ">
+                                <Text className="text-accent1 text-sm font-pSemiBold">
                                     {getCapitalizedText(collegeCategory.name)}
                                 </Text>
                             </CustomButton>
                         </View>
 
-                        <View className="gap-2">
-                            <Text className="text-primary font-pBold text-xl">
+                        {/* NAME + LOCATION */}
+                        <View className="gap-3">
+
+                            {/* NAME */}
+                            <Text className="text-primary font-pBold text-2xl leading-8">
                                 {getCapitalizedText(college.name)}
                             </Text>
 
-                            <View className="flex-row">
-                                <Ionicons
-                                    name="location-outline"
-                                    size={16}
-                                    color={"#999"}
-                                />
+                            {/* LOCATION */}
+                            <View className="flex-row items-center gap-2">
+                                <View className="bg-[#009688]/10 p-2 rounded-full">
+                                    <Ionicons
+                                        name="location"
+                                        size={16}
+                                        color="#009688"
+                                    />
+                                </View>
 
-                                <Text className="text-primary/50 font-pSemiBold text-sm">
+                                <Text className="text-primary/60 font-pMedium text-sm flex-1">
                                     {college.address.area},{" "}
                                     {college.address.city}, India
                                 </Text>
@@ -156,21 +183,56 @@ export default function College() {
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    contentContainerClassName="flex-row self-start"
+                    contentContainerClassName="px-4 gap-3 pb-2"
                 >
-                    {tabs.map((item) => (
-                        <CustomButton
-                            key={item}
-                            className={`px-4 py-2 w-32 items-center border-b-2 ${item === tab ? "border-b-accent1" : "border-b-transparent"}`}
-                            onPress={() => setTab(item)}
-                        >
-                            <Text
-                                className={`text-sm font-pSemiBold ${item === tab ? "text-accent1" : "text-primary"}`}
+                    {tabs.map((item) => {
+                        const isActive = item === tab;
+
+                        return (
+                            <CustomButton
+                                key={item}
+                                onPress={() => setTab(item)}
+                                className={`
+                    flex-row items-center gap-2
+                    px-5 py-3 rounded-full
+                    ${isActive
+                                        ? "bg-accent1"
+                                        : "bg-white"
+                                    }
+                `}
+                                style={{
+                                    elevation: 3,
+                                    shadowColor: "#000",
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.08,
+                                    shadowRadius: 4,
+                                }}
                             >
-                                {item}
-                            </Text>
-                        </CustomButton>
-                    ))}
+                                {isActive && (
+                                    <AntDesign
+                                        name="checkcircle"
+                                        size={16}
+                                        color="#fff"
+                                    />
+                                )}
+
+                                <Text
+                                    className={`
+                        text-sm font-pSemiBold
+                        ${isActive
+                                            ? "text-white"
+                                            : "text-primary"
+                                        }
+                    `}
+                                >
+                                    {item}
+                                </Text>
+                            </CustomButton>
+                        );
+                    })}
                 </ScrollView>
 
                 {tab === "Description" && <Description college={college} />}
@@ -231,134 +293,205 @@ function Header({ college }: { college: CollegeType }) {
 }
 
 function Description({ college }: { college: CollegeType }) {
-    let phone: string;
-    let whatsapp: string;
+    let phone: string = "";
+    let whatsapp: string = "";
 
     college.details.forEach((detail) => {
-        if (detail.type === "phone") phone = detail.value;
-        else if (detail.type === "whatsapp") whatsapp = detail.value;
+        if (detail.type === "phone") {
+            phone = detail.value;
+        }
+
+        if (detail.type === "whatsapp") {
+            whatsapp = detail.value;
+        }
     });
 
     function openPhone() {
-        if (phone == null) return;
+        if (!phone) return;
 
-        if (phone.length === 10) phone = "+91" + phone;
+        if (phone.length === 10) {
+            phone = "+91" + phone;
+        }
 
         Linking.openURL(`tel:${phone}`);
     }
 
     function openWhatsapp() {
-        if (whatsapp == null) return;
+        if (!whatsapp) return;
 
-        if (whatsapp.length === 10) whatsapp = "+91" + whatsapp;
+        if (whatsapp.length === 10) {
+            whatsapp = "+91" + whatsapp;
+        }
 
-        const message = `I am interested in persuing B.Tech from your college.`;
-        const url = `https://api.whatsapp.com/send?phone=${whatsapp}&text=${message}`;
+        const message =
+            "Hi, I am interested in your coaching institute.";
+
+        const url = `https://api.whatsapp.com/send?phone=${whatsapp}&text=${encodeURIComponent(message)}`;
+
         Linking.openURL(url);
     }
 
     function openMap() {
-        // New Delhi coords
-        const coords = {
-            latitude: 28.6139,
-            longitude: 77.209,
-        };
-
         const address = college.address;
+
         const encodedQuery = encodeURIComponent(
             `${address.area} ${address.city} ${address.nearBy} ${address.state} ${address.pincode}`,
         );
 
-        // const url = `https://www.google.com/maps/search/?api=1&query=${coords.latitude},${coords.longitude}`;
-
         const url = `https://www.google.com/maps/search/?api=1&query=${encodedQuery}`;
 
-        Linking.canOpenURL(url).then((supported) => {
-            if (supported) {
-                Linking.openURL(url);
-            } else {
-                errorToast("Error", "Google Maps is not available");
-            }
-        });
+        Linking.openURL(url);
     }
 
     return (
-        <View className="px-4 py-6 gap-4">
-            <View className="gap-2">
-                <Text className="text-primary font-pSemiBold text-lg">
+        <View className="px-4 py-5 gap-5">
+
+            {/* CONTACT CARD */}
+            <View
+                className="bg-white rounded-3xl p-5"
+                style={{
+                    elevation: 4,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.08,
+                    shadowRadius: 5,
+                }}
+            >
+                <Text className="text-primary font-pBold text-xl mb-4">
                     Contact
                 </Text>
 
-                <View className="flex-row items-center justify-between">
-                    <View className="flex-row items-center gap-2">
-                        <CustomImage
-                            image={{ uri: getImageURI(college.images.logo[0]) }}
-                            className="w-16 aspect-square rounded-full items-center justify-center"
-                            imageClassName="w-full h-full"
-                        />
+                {/* OWNER */}
+                <View className="flex-row items-center gap-3 mb-5">
+                    <CustomImage
+                        image={{
+                            uri: getImageURI(
+                                college.images.logo[0],
+                            ),
+                        }}
+                        className="w-16 h-16 rounded-full"
+                        imageClassName="w-full h-full"
+                    />
 
-                        <View>
-                            <Text className="text-primary font-pSemiBold text-lg">
-                                {college.ownerName}
-                            </Text>
-                            <Text className="text-primary/50 font-pSemiBold text-sm">
-                                Parnter
+                    <View className="flex-1">
+                        <Text className="text-primary font-pSemiBold text-lg">
+                            {college.ownerName || college.name}
+                        </Text>
+
+                        <Text className="text-primary/50 text-sm">
+                            Coaching Partner
+                        </Text>
+                    </View>
+                </View>
+
+                {/* BUTTONS */}
+                <View className="flex-row gap-3 mt-4">
+
+                    {/* CALL */}
+                    <CustomButton
+                        className="flex-1 bg-blue-950 py-3 rounded-xl"
+                        onPress={openPhone}
+                    >
+                        <View className="flex-row items-center justify-center gap-2">
+                            <MaterialCommunityIcons
+                                name="phone"
+                                color="#0eeebd"
+                                size={18}
+                            />
+
+                            <Text className="text-white font-semibold">
+                                Call Now
                             </Text>
                         </View>
-                    </View>
+                    </CustomButton>
 
-                    <View className="flex-row items-center gap-4">
-                        <CustomButton
-                            onPress={openWhatsapp}
-                            className="w-10 aspect-square items-center justify-center rounded-full bg-[#128c7e]"
-                        >
-                            <FontAwesome
+                    {/* WHATSAPP */}
+                    <CustomButton
+                        className="flex-1 bg-green-500 py-3 rounded-xl"
+                        onPress={openWhatsapp}
+                    >
+                        <View className="flex-row items-center justify-center gap-2">
+                            <MaterialCommunityIcons
                                 name="whatsapp"
-                                size={30}
-                                color="#fff"
+                                color="#064412"
+                                size={18}
                             />
-                        </CustomButton>
 
-                        <CustomButton
-                            onPress={openPhone}
-                            className="w-10 aspect-square items-center justify-center rounded-full"
-                        >
-                            <FontAwesome
-                                name="phone"
-                                size={30}
-                                color="#0d9488"
-                            />
-                        </CustomButton>
-                    </View>
+                            <Text className="text-white font-semibold">
+                                WhatsApp
+                            </Text>
+                        </View>
+                    </CustomButton>
                 </View>
             </View>
 
-            <View>
-                <Text className="text-primary font-pSemiBold text-lg">
+            {/* DESCRIPTION CARD */}
+            <View
+                className="bg-white rounded-3xl p-5"
+                style={{
+                    elevation: 4,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.08,
+                    shadowRadius: 5,
+                }}
+            >
+                <Text className="text-primary font-pBold text-xl mb-4">
                     Description
                 </Text>
 
                 <HTMLText html={college.longDescription} />
             </View>
 
-            <View className="flex-row items-center justify-between border-b-hairline border-b-primary/50 pb-4">
-                <Text className="text-primary font-pSemiBold text-lg">
-                    Address
-                </Text>
-
-                <CustomButton onPress={openMap}>
-                    <Text className="text-accent1 font-pSemiBold text-sm">
-                        View on Map
+            {/* ADDRESS CARD */}
+            <View
+                className="bg-white rounded-3xl p-5"
+                style={{
+                    elevation: 4,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.08,
+                    shadowRadius: 5,
+                }}
+            >
+                <View className="flex-row items-center justify-between mb-4">
+                    <Text className="text-primary font-pBold text-xl">
+                        Address
                     </Text>
-                </CustomButton>
-            </View>
 
-            <View>
-                <Text className="text-primary font-pRegular text-sm">
-                    {college.address.area} {college.address.city}{" "}
-                    {college.address.nearBy} {college.address.state}{" "}
-                    {college.address.pincode}
-                </Text>
+                    <CustomButton
+                        onPress={openMap}
+                        className="bg-[#009688]/10 px-4 py-2 rounded-full"
+                    >
+                        <Text className="text-[#009688] font-pSemiBold text-sm">
+                            View on Map
+                        </Text>
+                    </CustomButton>
+                </View>
+
+                <View className="flex-row gap-3">
+                    <Ionicons
+                        name="location"
+                        size={22}
+                        color="#009688"
+                    />
+
+                    <Text className="flex-1 text-primary/70 leading-6">
+                        {college.address.area},{" "}
+                        {college.address.city},{" "}
+                        {college.address.state} -{" "}
+                        {college.address.pincode}
+                    </Text>
+                </View>
             </View>
         </View>
     );
@@ -714,16 +847,16 @@ function Courses({ college }: { college: CollegeType }) {
 
                                 {Number(item.sellingPrice) <
                                     Number(item.price) && (
-                                    <View className="flex-row">
-                                        <Text className="text-accent2 text-xs font-pSemiBold">
-                                            MRP
-                                        </Text>
-                                        <Text className="text-accent2 text-xs font-pSemiBold line-through">
-                                            {" "}
-                                            ₹{item.price}
-                                        </Text>
-                                    </View>
-                                )}
+                                        <View className="flex-row">
+                                            <Text className="text-accent2 text-xs font-pSemiBold">
+                                                MRP
+                                            </Text>
+                                            <Text className="text-accent2 text-xs font-pSemiBold line-through">
+                                                {" "}
+                                                ₹{item.price}
+                                            </Text>
+                                        </View>
+                                    )}
                             </View>
 
                             <CustomButton

@@ -1,21 +1,17 @@
 import CustomButton from "@/components/common/CustomButton";
 import CustomHeader from "@/components/common/CustomHeader";
-import CustomImage from "@/components/common/CustomImage";
 import Loader from "@/components/common/Loader";
 import NotFound from "@/components/common/NotFound";
 import SearchBar from "@/components/common/SearchBar";
-import SaveButton from "@/components/SaveButton/SaveButton";
 import envConfig from "@/config/env.config";
-import useGetSearchCollegesSuggestions from "@/hooks/useGetSearchCollegesSuggestions.hook ";
 import useGetSearchedColleges from "@/hooks/useGetSearchedColleges.hook";
 import chunkArray from "@/lib/chunkArray";
 import getCapitalizedText from "@/lib/getCapitalizedText";
-import getImageURI from "@/lib/getImageURI";
 import getRecentSearches from "@/lib/getRecentSearches";
 import asyncSetRecentSearches from "@/lib/setRecentSearches";
 import { useAppSelector } from "@/redux/store";
 import SearchCollegesSuggestionsType from "@/types/SearchCollegeSuggestions.type";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -27,33 +23,34 @@ import {
 } from "react-native";
 
 export default function Search() {
-    const { isLoading, colleges } = useGetSearchedColleges();
     const { q } = useLocalSearchParams<{
         q: string;
     }>();
     const { width } = useWindowDimensions();
     const [search, setSearch] = useState("");
-    const { isLoading: isSearchSuggestionsLoading, suggestions } =
-        useGetSearchCollegesSuggestions(search);
-    const [searchSuggestionsVisible, setSearchSuggestionsVisible] =
-        useState(false);
+    const { isLoading, colleges } = useGetSearchedColleges(search);
+    // const { isLoading: isSearchSuggestionsLoading, suggestions } =
+    //     useGetSearchCollegesSuggestions(search);
+    // const [searchSuggestionsVisible, setSearchSuggestionsVisible] =
+    //     useState(false);
     const { isAuthenticated } = useAppSelector((state) => state.user);
 
-    useEffect(() => {
-        setSearchSuggestionsVisible(false);
 
-        if (q == null) return;
+    // useEffect(() => {
+    //     setSearchSuggestionsVisible(false);
 
-        setSearch(q);
-    }, [q]);
+    //     if (q == null) return;
 
-    useEffect(() => {
-        if (search.trim() !== "") {
-            setSearchSuggestionsVisible(true);
-        } else {
-            setSearchSuggestionsVisible(false);
-        }
-    }, [search]);
+    //     setSearch(q);
+    // }, [q]);
+
+    // useEffect(() => {
+    //     if (search.trim() !== "") {
+    //         setSearchSuggestionsVisible(true);
+    //     } else {
+    //         setSearchSuggestionsVisible(false);
+    //     }
+    // }, [search]);
 
     // Suggested UX-optimized item count
     let itemsPerRow = 4;
@@ -84,7 +81,7 @@ export default function Search() {
     }
 
     const handleSelectSuggestion = (item: SearchCollegesSuggestionsType) => {
-        setSearchSuggestionsVisible(false); // Hide immediately
+        // setSearchSuggestionsVisible(false); // Hide immediately
         setSearch(item.name);
 
         setTimeout(() => {
@@ -103,28 +100,30 @@ export default function Search() {
                         setSearch={(text) => setSearch(text)}
                         onSubmitEditing={() => {
                             if (search.trim() === "") return;
-                            setSearchSuggestionsVisible(false);
+                            // setSearchSuggestionsVisible(false);
                             router.setParams({
                                 q: search.trim(),
                             });
                         }}
                     />
 
-                    <SearchSuggestionsList
+                    {/* <SearchSuggestionsList
                         visible={
                             searchSuggestionsVisible && search.trim() !== ""
                         }
                         suggestions={suggestions}
                         onSelect={handleSelectSuggestion}
                         loading={isSearchSuggestionsLoading}
-                    />
+                    /> */}
                 </View>
 
                 <RecentSearches />
 
-                {isLoading && <Loader fullscreen />}
-
-                {colleges.length === 0 ? (
+                {isLoading ? (
+                    <Loader fullscreen />
+                ) : search.trim() === "" ? (
+                    <NotFound heading="Start typing..." body="Search colleges to see results" />
+                ) : colleges.length === 0 ? (
                     <NotFound heading="Not Found!" body="No colleges found!" />
                 ) : (
                     <View
@@ -134,94 +133,90 @@ export default function Search() {
                         }}
                         className="bg-secondary flex-1"
                     >
+                        <View className="flex-row items-center justify-between mb-4 px-1">
+                            {/* Left Title */}
+                            <Text className="text-[#6B7280] text-[13px] font-pBold tracking-wider">
+                                AVAILABLE INSTITUTIONS
+                            </Text>
+
+                            {/* Right Filter */}
+                            <CustomButton
+                                className="flex-row items-center"
+                                onPress={() => {
+                                    // open filter modal here
+                                }}
+                                debounce
+                            >
+                                <Text className="text-[#F59E0B] text-[13px] font-pSemiBold mr-1">
+                                    Filter
+                                </Text>
+
+                                <Ionicons
+                                    name="options-outline"
+                                    size={15}
+                                    color="#F59E0B"
+                                />
+                            </CustomButton>
+                        </View>
                         <FlatList
-                            data={chunked}
-                            keyExtractor={(_, index) => `row-${index}`}
-                            renderItem={({ item: row }) => (
-                                <View className="flex-row justify-start mb-6">
-                                    {row.map((item, i) => (
-                                        <CustomButton
-                                            key={item.id}
-                                            className="bg-white rounded-2xl shadow-md overflow-hidden"
-                                            style={{
-                                                width: itemWidth,
-                                                marginRight:
-                                                    i !== row.length - 1
-                                                        ? gapBetweenItems
-                                                        : 0,
-                                            }}
-                                            onPress={() => {
-                                                if (!isAuthenticated) {
-                                                    router.push("/login");
-                                                    return;
-                                                }
-
-                                                router.push(
-                                                    `/college/${item.id}`
-                                                );
-                                            }}
-                                            debounce
-                                        >
-                                            <CustomImage
-                                                image={{
-                                                    uri: getImageURI(
-                                                        item.images.logo[0]
-                                                    ),
-                                                }}
-                                                className="w-full aspect-square rounded-none"
-                                                imageClassName="w-full h-full"
-                                            />
-
-                                            <View className="flex-row px-2 py-3 justify-between">
-                                                <View className="gap-2 flex-1 pr-2">
-                                                    <Text
-                                                        className="text-primary font-pSemiBold text-sm leading-5"
-                                                        numberOfLines={2}
-                                                    >
-                                                        {getCapitalizedText(
-                                                            item.name
-                                                        )}
-                                                    </Text>
-
-                                                    {/* <Text className="text-accent1 text-xs font-pSemiBold">
-                                                ₹ {item.amountPaid}/month
-                                            </Text> */}
-
-                                                    <View className="flex-row items-center">
-                                                        <AntDesign
-                                                            name="star"
-                                                            size={16}
-                                                            color="orange"
-                                                        />
-
-                                                        <Text className="text-primary/50 text-sm font-pSemiBold mt-1">
-                                                            4.5
-                                                        </Text>
-                                                    </View>
-
-                                                    <View className="flex-row items-center">
-                                                        <Ionicons
-                                                            name="location-outline"
-                                                            size={14}
-                                                            color={"#999"}
-                                                        />
-                                                        <Text
-                                                            className="text-primary/40 text-xs font-pSemiBold ml-1"
-                                                            numberOfLines={1}
-                                                        >
-                                                            {item.address.area}
-                                                        </Text>
-                                                    </View>
-                                                </View>
-
-                                                <SaveButton item={item} />
-                                            </View>
-                                        </CustomButton>
-                                    ))}
-                                </View>
-                            )}
+                            data={colleges}
+                            keyExtractor={(item) => item.id}
                             showsVerticalScrollIndicator={false}
-                            contentContainerStyle={{ paddingBottom: 32 }}
+                            contentContainerStyle={{
+                                paddingBottom: 32,
+                            }}
+                            ItemSeparatorComponent={() => (
+                                <View style={{ height: 12 }} />
+                            )}
+                            renderItem={({ item }) => (
+                                <CustomButton
+                                    className="bg-white rounded-2xl border border-[#ccc]"
+                                    style={{
+                                        paddingHorizontal: 16,
+                                        paddingVertical: 16,
+                                        elevation : 3,
+                                    }}
+                                    onPress={() => {
+                                        if (!isAuthenticated) {
+                                            router.push("/login");
+                                            return;
+                                        }
+
+                                        router.push(`/college/${item.id}`);
+                                    }}
+                                    debounce
+                                >
+                                    <View className="flex-row items-center justify-between">
+                                        {/* Left Content */}
+                                        <View className="flex-1 pr-3">
+                                            <Text
+                                                className="text-primary font-pBold text-[17px]"
+                                                numberOfLines={1}
+                                            >
+                                                {getCapitalizedText(item.name)}
+                                            </Text>
+
+                                            <Text
+                                                className="text-[#8A8A8A] text-[13px] mt-1 font-pMedium"
+                                                numberOfLines={1}
+                                            >
+                                                {item.categories[0]?.name ||
+                                                    item.categories[0]?.name ||
+                                                    "Institute"}
+                                            </Text>
+                                        </View>
+
+                                        {/* Right Arrow */}
+                                        <View className="items-center justify-center">
+                                            <Ionicons
+                                                name="chevron-forward"
+                                                size={20}
+                                                color="#9CA3AF"
+                                            />
+                                        </View>
+                                    </View>
+                                </CustomButton>
+                            )}
                         />
                     </View>
                 )}

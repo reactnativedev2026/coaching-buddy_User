@@ -1,174 +1,233 @@
 import { resendOTP, verifyOTP } from "@/api/users.api";
 import CustomButton from "@/components/common/CustomButton";
-import CustomImage from "@/components/common/CustomImage";
+import CustomHeader from "@/components/common/CustomHeader";
 import OTPInput from "@/components/common/OTPInput/OTPInput";
-import IMAGES from "@/constants/images.contant";
 import formatTimer from "@/lib/formatTimer";
 import setAuthToken from "@/lib/setAuthToken";
 import successToast from "@/lib/successToast";
-import content from "@/locales/en/verifyOtp.json";
 import {
-  setIsAuthenticated,
-  setIsLoading,
-  setUser,
+    setIsAuthenticated,
+    setIsLoading,
+    setUser,
 } from "@/redux/slices/user.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { KeyboardAvoidingView, ScrollView, Text, View } from "react-native";
+import {
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 // 30 seconds
 const RESEND_TIME = 30;
 
 export default function VerifyOtp() {
-  const dispatch = useAppDispatch();
-  const [timer, setTimer] = useState(RESEND_TIME);
-  const [isResendOTP, setIsResendOTP] = useState(true);
-  const { user, isLoading } = useAppSelector((state) => state.user);
-  const startTimeRef = useRef<number | null>(null);
-  const [timerRestartKey, setTimerRestartKey] = useState(0);
-  
-  // 🔥 Add navigation state to prevent race conditions
-  const [isNavigating, setIsNavigating] = useState(false);
+    const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    startTimeRef.current = Date.now();
+    const [timer, setTimer] = useState(RESEND_TIME);
+    const [isResendOTP, setIsResendOTP] = useState(true);
+    const [isNavigating, setIsNavigating] = useState(false);
 
-    const intervalId = setInterval(() => {
-      if (startTimeRef.current === null) return;
+    const { user, isLoading } = useAppSelector((state) => state.user);
 
-      const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
-      const remaining = RESEND_TIME - elapsed;
+    const startTimeRef = useRef<number | null>(null);
+    const [timerRestartKey, setTimerRestartKey] = useState(0);
 
-      if (remaining <= 0) {
-        clearInterval(intervalId);
-        setTimer(0);
-      } else {
-        setTimer(remaining);
-      }
-    }, 1000);
+    useEffect(() => {
+        startTimeRef.current = Date.now();
 
-    return () => clearInterval(intervalId);
-  }, [timerRestartKey]);
+        const intervalId = setInterval(() => {
+            if (startTimeRef.current === null) return;
 
-  async function handleVerifyOtp(otp: string) {
-    if (user == null || isNavigating) return; 
+            const elapsed = Math.floor(
+                (Date.now() - startTimeRef.current) / 1000
+            );
 
-    try {
-      setIsNavigating(true); 
-      dispatch(setIsLoading(true));
+            const remaining = RESEND_TIME - elapsed;
 
-      const res = await verifyOTP(otp, user.id);
+            if (remaining <= 0) {
+                clearInterval(intervalId);
+                setTimer(0);
+            } else {
+                setTimer(remaining);
+            }
+        }, 1000);
 
-      successToast(res.message);
+        return () => clearInterval(intervalId);
+    }, [timerRestartKey]);
 
-      if (res.data != null) {
-        // 🔥 Update Redux state first
-        dispatch(setUser(res.data.user));
-        
-        if (res.data.token != null) {
-          await setAuthToken(res.data.token);
+    async function handleVerifyOtp(otp: string) {
+        if (user == null || isNavigating) return;
+
+        try {
+            setIsNavigating(true);
+            dispatch(setIsLoading(true));
+
+            const res = await verifyOTP(otp, user.id);
+
+            successToast(res.message);
+
+            if (res.data != null) {
+                dispatch(setUser(res.data.user));
+
+                if (res.data.token != null) {
+                    await setAuthToken(res.data.token);
+                }
+
+                if (!res.data?.isNew) {
+                    dispatch(setIsAuthenticated(true));
+                }
+
+                setTimeout(() => {
+                    if (res.data!.isNew) {
+                        router.replace("/complete-profile");
+                    } else {
+                        router.replace("/home");
+                    }
+                }, 200);
+            }
+        } catch (error) {
+            setIsNavigating(false);
+        } finally {
+            dispatch(setIsLoading(false));
         }
-        
-        if (!res.data?.isNew) {
-          dispatch(setIsAuthenticated(true));
+    }
+
+    async function handleResendOTP() {
+        if (user == null || isNavigating) return;
+
+        setTimerRestartKey((prev) => prev + 1);
+        setTimer(RESEND_TIME);
+        setIsResendOTP(true);
+
+        try {
+            dispatch(setIsLoading(true));
+
+            const res = await resendOTP(user.id);
+
+            successToast(res.message);
+        } catch (error) {
+        } finally {
+            dispatch(setIsLoading(false));
         }
-        
-        setTimeout(() => {
-          if (res.data!.isNew) {
-            router.replace("/complete-profile");
-          } else {
-            router.replace("/home");
-          }
-        }, 200);
-      }
-    } catch (error) {
-      // console.error("Verify OTP error ", error);
-      setIsNavigating(false); 
-    } finally {
-      dispatch(setIsLoading(false));
     }
-  }
 
-  async function handleResendOTP() {
-    if (user == null || isNavigating) return;
-
-    setTimerRestartKey((prev) => prev + 1);
-    setTimer(RESEND_TIME);
-    setIsResendOTP(true);
-
-    try {
-      dispatch(setIsLoading(true));
-
-      const res = await resendOTP(user.id);
-
-      successToast(res.message);
-    } catch (error) {
-      // console.error("Resend OTP error ", error);
-    } finally {
-      dispatch(setIsLoading(false));
-    }
-  }
-
-  // 🔥 Add cleanup on unmount
-  useEffect(() => {
-    return () => {
-      setIsNavigating(false);
-    };
-  }, []);
-
-  return (
-    <KeyboardAvoidingView className="flex-1" behavior="padding">
-      <ScrollView 
-        contentContainerClassName="min-h-full bg-secondary gap-6 pb-20"
-        keyboardShouldPersistTaps="handled" 
-        showsVerticalScrollIndicator={false}
-      >
-        <CustomImage
-          image={IMAGES.LoginImage}
-          className="w-full aspect-square"
-        />
-
-        <View className="px-4 gap-6">
-          <Text className="text-primary font-pSemiBold text-lg">
-            {content.heading}
-          </Text>
-
-          <OTPInput
-            isLoading={isLoading || isNavigating} 
-            handleVerifyOTP={handleVerifyOtp}
-            isResendOTP={isResendOTP}
-            setIsResendOTP={setIsResendOTP}
-          />
-        </View>
-
-        <View
-          className={
-            "flex-row items-center mx-auto px-2 justify-between w-3/4 mt-4"
-          }
+    return (
+        <KeyboardAvoidingView
+            className="flex-1 bg-[#f5f5f5]"
+            behavior="padding"
         >
-          <Text className="text-md font-pRegular text-accent1">
-            Didn't get the OTP?
-          </Text>
+            <CustomHeader
+                title="Coaching Buddy"
+            />
 
-          <View className="flex-row">
-            {timer === 0 ? (
-              <CustomButton
-                onPress={handleResendOTP}
-                disabled={timer !== 0 || isLoading || isNavigating} 
-              >
-                <Text className="text-base font-pSemiBold text-accent2 underline">
-                  Resend
+            <ScrollView
+                contentContainerClassName="flex-grow justify-center px-4"
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                {/* CARD */}
+                <View className="bg-white rounded-2xl p-6 shadow-md">
+
+                    {/* TITLE */}
+                    <Text className="text-center text-4xl font-pBold text-primary leading-[42px]">
+                        Verify OTP
+                    </Text>
+
+                    <Text className="text-center text-gray-500 mt-2 mb-6">
+                        Enter the OTP sent to your email
+                    </Text>
+
+                    {/* OTP INPUT */}
+                    <OTPInput
+                        isLoading={isLoading || isNavigating}
+                        handleVerifyOTP={handleVerifyOtp}
+                        isResendOTP={isResendOTP}
+                        setIsResendOTP={setIsResendOTP}
+                    />
+
+                    {/* VERIFY BUTTON LOADER */}
+                    {(isLoading || isNavigating) && (
+                        <View className="mt-6 items-center">
+                            <ActivityIndicator size="small" color="#0B1F3A" />
+                        </View>
+                    )}
+
+                    {/* DIVIDER */}
+                    <View className="h-0.5 bg-gray-200 mt-8 mb-6" />
+
+                    {/* RESEND */}
+                    <View className="flex-row items-center justify-center gap-2">
+                        <Text className="text-sm text-gray-500">
+                            Didn’t receive OTP?
+                        </Text>
+
+                        {timer === 0 ? (
+                            <CustomButton
+                                onPress={handleResendOTP}
+                                disabled={
+                                    timer !== 0 ||
+                                    isLoading ||
+                                    isNavigating
+                                }
+                            >
+                                <Text className="text-sm font-pSemiBold text-[#0B1F3A] underline">
+                                    Resend
+                                </Text>
+                            </CustomButton>
+                        ) : (
+                            <Text className="text-sm font-pSemiBold text-[#0B1F3A] opacity-50 underline">
+                                {formatTimer(timer)}
+                            </Text>
+                        )}
+                    </View>
+
+                    {/* TERMS */}
+                    <View className="items-center mt-6">
+                        <Text className="text-center text-xs text-gray-400">
+                            By continuing, you agree to Coaching Buddy's
+                        </Text>
+
+                        <View className="flex-row flex-wrap justify-center mt-1">
+                            <TouchableOpacity
+                                onPress={() => router.push("/terms")}
+                            >
+                                <Text className="text-xs underline font-pBold text-black">
+                                    Terms & Conditions
+                                </Text>
+                            </TouchableOpacity>
+
+                            <Text className="text-xs text-gray-400"> and </Text>
+
+                            <TouchableOpacity
+                                onPress={() => router.push("/privacypolicy")}
+                            >
+                                <Text className="text-xs underline font-pBold text-black">
+                                    Privacy Policy
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
+                {/* ENCRYPTION BADGE */}
+                <View className="bg-gray-200 rounded-full px-4 py-2 mt-6 self-center flex-row items-center gap-2">
+                    <View className="w-2 h-2 bg-blue-500 rounded-full" />
+
+                    <Text className="text-xs text-gray-600">
+                        SECURE 256-BIT ENCRYPTION
+                    </Text>
+                </View>
+
+                {/* FOOTER */}
+                <Text className="text-center text-xs text-gray-400 mt-6">
+                    © 2026 ADVAMINDS EDUSERVE PVT. LTD.
                 </Text>
-              </CustomButton>
-            ) : (
-              <Text className="text-base font-pSemiBold text-accent2 opacity-50 underline">
-                {formatTimer(timer)}
-              </Text>
-            )}
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
-  );
+            </ScrollView>
+        </KeyboardAvoidingView>
+    );
 }

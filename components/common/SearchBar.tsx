@@ -13,15 +13,16 @@ type SearchBarPropsType = {
 
 export default function SearchBar({
     search = "",
-    setSearch = () => {},
-    onSubmitEditing = () => {},
+    setSearch = () => { },
+    onSubmitEditing = () => { },
 }: SearchBarPropsType) {
     const pathname = usePathname();
 
     if (pathname !== "/search")
         return (
             <CustomButton
-                className="bg-secondary flex-row items-center gap-2 px-4 border-t-hairline border-l-hairline border-r-hairline border-primary shadow-md rounded-xl relative"
+                className="bg-secondary flex-row items-center gap-2 px-4 border border-primary/20 shadow-md rounded-xl relative"
+
                 onPress={() => router.push("/search")}
             >
                 <EvilIcons name="search" size={28} color="#999" />
@@ -33,7 +34,7 @@ export default function SearchBar({
         );
 
     return (
-        <View className="bg-secondary flex-row items-center gap-2 px-4 border-t-hairline border-l-hairline border-r-hairline border-primary shadow-md rounded-xl relative">
+        <View className="bg-secondary flex-row items-center gap-2 px-4 border border-primary/20 shadow-md rounded-xl relative">
             <EvilIcons name="search" size={28} color="#999" />
 
             <TextInput

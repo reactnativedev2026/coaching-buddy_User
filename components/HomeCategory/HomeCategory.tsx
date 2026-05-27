@@ -29,14 +29,17 @@ export default function HomeCategory({
     );
 
   return (
-    <View className="flex-row flex-wrap  gap-4 justify-center max-w-[100%] mx-auto ">
+    <View className="flex-row flex-wrap  gap-4 justify-center max-w-[100%] mx-auto">
+      <Text className="w-full text-primary text-lg font-pSemiBold mb-2 px-4">
+        Categories
+      </Text>
       {isLoading
         ? skeletonCategories.map((item, i) => {
-            return <CategoryItemLoadingSkeleton key={i} />;
-          })
+          return <CategoryItemLoadingSkeleton key={i} />;
+        })
         : parentCategories.map((item) => {
-            return <CategoryItem category={item} key={item.id} />;
-          })}
+          return <CategoryItem category={item} key={item.id} />;
+        })}
     </View>
   );
 }
@@ -45,7 +48,7 @@ function CategoryItem({ category }: { category: CategoryType }) {
   const { isAuthenticated } = useAppSelector((state) => state.user);
   return (
     <CustomButton
-      className={`w-20 items-center gap-2`}
+      className="w-[22%] items-center gap-2 mb-4"
       onPress={() => {
         if (!isAuthenticated) {
           router.push("/login");

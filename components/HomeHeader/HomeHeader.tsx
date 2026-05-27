@@ -1,12 +1,10 @@
-import IMAGES from "@/constants/images.contant";
 import content from "@/locales/en/homeHeader.json";
 import { useAppSelector } from "@/redux/store";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { router } from "expo-router";
 import { Text, View } from "react-native";
 import CustomButton from "../common/CustomButton";
 import CustomImage from "../common/CustomImage";
-import SearchBar from "../common/SearchBar";
 
 export default function HomeHeader() {
     const { user, isAuthenticated } = useAppSelector((state) => state.user);
@@ -14,16 +12,27 @@ export default function HomeHeader() {
     return (
         <View className="bg-accent1 px-4 py-6 gap-4">
             <View className="flex-row items-center justify-between">
-                <View>
-                    <Text className="text-secondary text-xl font-pSemiBold">
-                        {content.heading}
-                    </Text>
 
-                    <Text className="text-secondary text-lg font-pSemiBold">
-                        {user?.name != null ? user.name : "Guest"}
-                    </Text>
+                {/* LEFT SIDE */}
+                <View className="flex-row items-center gap-4">
+                    <CustomImage
+                        image={require("@/assets/images/appIcon.png")}
+                        className="w-16 h-16"
+                        imageClassName="w-full h-full"
+                    />
+
+                    <View>
+                        <Text className="text-secondary text-xl font-pSemiBold">
+                            {content.heading}
+                        </Text>
+
+                        <Text className="text-secondary text-lg font-pSemiBold">
+                            {user?.name != null ? user.name : "Guest"}
+                        </Text>
+                    </View>
                 </View>
 
+                {/* RIGHT ICON */}
                 <CustomButton
                     onPress={() => {
                         if (!isAuthenticated) {
@@ -31,31 +40,18 @@ export default function HomeHeader() {
                             return;
                         }
 
-                        router.push("/profile");
+                        // router.push("/profile");
                     }}
-                    debounce
-                    debounceTime={2000}
+                    className="p-2"
                 >
-                    {user?.avatarName != null ? (
-                        <CustomImage
-                            image={IMAGES[user.avatarName ?? "EduBee"]}
-                            className="w-20 aspect-square rounded-full bg-secondary"
-                            imageClassName="w-full h-full"
-                        />
-                    ) : (
-                        <View className="w-20 aspect-square p-2 items-center justify-center rounded-full bg-secondary shadow-md">
-                            <FontAwesome5
-                                name="user-alt"
-                                size={28}
-                                color="black"
-                            />
-                        </View>
-                    )}
+                    <MaterialCommunityIcons
+                        name="bell-outline"
+                        size={32}
+                        color="#fff"
+                    />
                 </CustomButton>
-            </View>
 
-            {/* search bar */}
-            <SearchBar />
+            </View>
         </View>
     );
 }

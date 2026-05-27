@@ -18,10 +18,22 @@ export default function Favorite() {
                     body="You haven't saved anything yet!"
                 />
             ) : (
-                <View className="px-4 py-4">
+                <View className="flex-1 px-4 pt-4">
                     <FlatList
                         data={saved}
-                        renderItem={({ item }) => <SavedItem item={item} />}
+                        keyExtractor={(item) => item.id.toString()}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{
+                            paddingBottom: 30,
+                        }}
+                        ItemSeparatorComponent={() => <View className="h-4" />}
+                        renderItem={({ item }) => (
+                            <View
+                                className="bg-white rounded-2xl p-1"
+                            >
+                                <SavedItem item={item} />
+                            </View>
+                        )}
                     />
                 </View>
             )}

@@ -1,22 +1,28 @@
 import { login } from "@/api/users.api";
 import CustomButton from "@/components/common/CustomButton";
-import CustomImage from "@/components/common/CustomImage";
+import CustomHeader from "@/components/common/CustomHeader";
 import FormField from "@/components/common/FormField";
-import IMAGES from "@/constants/images.contant";
 import errorToast from "@/lib/errorToast";
 import successToast from "@/lib/successToast";
 import { emailValidation } from "@/lib/validation";
-import content from "@/locales/en/login.json";
 import { setIsLoading, setUser } from "@/redux/slices/user.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { useState } from "react";
-import { KeyboardAvoidingView, ScrollView, Text, View } from "react-native";
+import {
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const dispatch = useAppDispatch();
     const { isLoading } = useAppSelector((state) => state.user);
+    const navigation = useNavigation();
 
     async function handleLogin() {
         if (!emailValidation.regex.test(email)) {
@@ -26,7 +32,6 @@ export default function Login() {
 
         try {
             dispatch(setIsLoading(true));
-
             const res = await login(email);
 
             successToast(res.message);
@@ -42,43 +47,94 @@ export default function Login() {
 
             router.replace("/verify-otp");
         } catch (error) {
-            // console.error("Login error ", error);
         } finally {
             dispatch(setIsLoading(false));
         }
     }
 
     return (
-        <KeyboardAvoidingView className="flex-1" behavior="padding">
-            <ScrollView contentContainerClassName="min-h-full bg-secondary gap-6 pb-20">
-                <CustomImage
-                    image={IMAGES.LoginImage}
-                    className="w-full aspect-square"
-                />
+        <KeyboardAvoidingView className="flex-1 bg-[#f5f5f5]" behavior="padding">
+            <CustomHeader title="Coaching Buddy" />
+            <ScrollView contentContainerClassName="flex-grow justify-center px-4">
 
-                <View className="px-4 gap-6">
-                    <Text className="text-primary font-pSemiBold text-lg">
-                        {content.heading}
+                {/* CARD */}
+                <View className="bg-white rounded-2xl p-6 shadow-md">
+
+                    {/* TITLE */}
+                    <Text className="text-center text-4xl font-pBold text-primary leading-[42px]">
+                        Login
                     </Text>
 
+                    <Text className="text-center text-gray-500 mt-2 mb-6">
+                        Enter your email address to continue
+                    </Text>
+
+                    {/* INPUT */}
                     <FormField
-                        label={content.emailFieldLabel}
-                        placeholder={content.emailFieldPlaceholder}
+                        label="EMAIL ADDRESS"
+                        placeholder="yourname@gmail.com"
                         value={email}
                         handleChangeText={setEmail}
                         inputType="email-address"
                     />
+
+                    {/* BUTTON */}
+                    <CustomButton
+                        className="bg-[#0B1F3A] rounded-xl items-center justify-center py-4 mt-6"
+                        disabled={isLoading}
+                        onPress={handleLogin}
+                    >
+                        {isLoading ? (
+                            <ActivityIndicator size="small" color="#fff" />
+                        ) : (
+                            <Text className="text-white font-pSemiBold text-base">
+                                Continue →
+                            </Text>
+                        )
+                        }
+                    </CustomButton>
+                    <View className="h-0.5 bg-gray-200 mt-8 mb-8" />
+
+                    <View className="items-center mt-6">
+                        <Text className="text-center text-xs text-gray-400">
+                            By continuing, you agree to Coaching Buddy's
+                        </Text>
+
+                        <View className="flex-row flex-wrap justify-center mt-1">
+                            <TouchableOpacity
+                                onPress={() => router.push("/terms")}
+                            >
+                                <Text className="text-xs underline font-pBold text-black">
+                                    Terms & Conditions
+                                </Text>
+                            </TouchableOpacity>
+
+                            <Text className="text-xs text-gray-400"> and </Text>
+
+                            <TouchableOpacity
+                                onPress={() => router.push("/privacypolicy")}
+                            >
+                                <Text className="text-xs underline font-pBold text-black">
+                                    Privacy Policy
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
 
-                <CustomButton
-                    className="bg-accent1 rounded-full items-center justify-center px-6 py-3 w-11/12 self-center mt-2 disabled:opacity-50"
-                    disabled={isLoading}
-                    onPress={handleLogin}
-                >
-                    <Text className="text-secondary font-pSemiBold">
-                        {content.buttonText}
+                {/* ENCRYPTION BADGE */}
+                <View className="bg-gray-200 rounded-full px-4 py-2 mt-6 self-center flex-row items-center gap-2">
+                    <View className="w-2 h-2 bg-blue-500 rounded-full" />
+                    <Text className="text-xs text-gray-600">
+                        SECURE 256-BIT ENCRYPTION
                     </Text>
-                </CustomButton>
+                </View>
+
+                {/* FOOTER */}
+                <Text className="text-center text-xs text-gray-400 mt-6">
+                    © 2026 ADVAMINDS EDUSERVE PVT. LTD.
+                </Text>
+
             </ScrollView>
         </KeyboardAvoidingView>
     );

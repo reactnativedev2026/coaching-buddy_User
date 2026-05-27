@@ -1,6 +1,6 @@
 import { Href, router } from "expo-router";
 import { ReactNode } from "react";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import CustomButton from "../common/CustomButton";
 
 type ProfileOptionPropsType = {
@@ -8,6 +8,9 @@ type ProfileOptionPropsType = {
     title: string;
     href?: Href;
     handleOnPress?: () => void;
+    isLogout?: boolean;
+    containerColor?: string;
+    textColor?: string;
 };
 
 export default function ProfileOption({
@@ -15,6 +18,9 @@ export default function ProfileOption({
     title,
     href,
     handleOnPress,
+    isLogout = false,
+    containerColor = "bg-gray-200",
+    textColor = "text-primary",
 }: ProfileOptionPropsType) {
     return (
         <CustomButton
@@ -23,11 +29,23 @@ export default function ProfileOption({
                 else if (handleOnPress != null) handleOnPress();
             }}
             debounce
-            className="flex-row items-center gap-4 px-4 py-2 rounded-lg"
+            className="flex-row items-center gap-4 py-1"
         >
-            {icon}
+            {/* ICON CONTAINER */}
+            <View
+                className={`w-10 h-10 rounded-2xl items-center justify-center ${containerColor}`}
+            >
+                {icon}
+            </View>
 
-            <Text className="text-primary font-pRegular">{title}</Text>
+            {/* TITLE */}
+            <Text
+                className={`text-[14px] font-pMedium ${
+                    isLogout ? "text-red-700" : textColor
+                }`}
+            >
+                {title}
+            </Text>
         </CustomButton>
     );
 }

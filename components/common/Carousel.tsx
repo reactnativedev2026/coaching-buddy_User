@@ -236,7 +236,7 @@ const Carousel: React.FC<CarouselProps> = ({
             <View
                 style={[
                     styles.container,
-                    { height, backgroundColor: "#f8f9fa" },
+                    { height, backgroundColor: "#f8f9fa" , elevation : 3 , shadowColor : "#000" , shadowOffset : { width : 0 , height : 2 } , shadowOpacity : 0.25 , shadowRadius : 3.84 }
                 ]}
             >
                 <TouchableOpacity
@@ -279,7 +279,7 @@ const Carousel: React.FC<CarouselProps> = ({
                 {extendedImages.map((item, index) => (
                     <TouchableOpacity
                         key={`${item.id}-${index}`}
-                        style={[styles.imageContainer, { borderRadius }]}
+                        style={[styles.imageContainer, { borderRadius ,}]}
                         onPress={() => handleImagePress(item, index)}
                         activeOpacity={0.95}
                     >

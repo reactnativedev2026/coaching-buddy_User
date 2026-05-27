@@ -4,7 +4,6 @@ import UserType from "@/types/User.type";
 
 export async function auth() {
     const res = await api.get<ApiResponseType<UserType>>("/user/auth");
-
     return res.data;
 }
 

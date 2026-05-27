@@ -1,14 +1,9 @@
-import CustomButton from "@/components/common/CustomButton";
-import CustomImage from "@/components/common/CustomImage";
-import IMAGES from "@/constants/images.contant";
 import content from "@/locales/en/welcome.json";
 import { setIsOnboarding } from "@/redux/slices/user.slice";
 import { useAppDispatch } from "@/redux/store";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { router } from "expo-router";
 import { useEffect } from "react";
-import { Text, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { Image, Text, View } from "react-native";
 
 export default function Welcome() {
     const dispatch = useAppDispatch();
@@ -25,37 +20,49 @@ export default function Welcome() {
     }, []);
 
     return (
-        <ScrollView contentContainerClassName="min-h-full flex-1 bg-secondary gap-6 pb-20">
-            <CustomImage
-                image={IMAGES.WelcomeImage}
-                className="w-full aspect-square"
-            />
+        <View className="flex-1 bg-secondary">
 
-            <View className="gap-6 px-4">
-                <View className="items-center px-4 gap-2">
-                    <Text className="text-accent1 font-pBold text-3xl">
-                        {content.heading1}
-                    </Text>
-                    <Text className="text-primary font-pBold text-center text-lg leading-6">
-                        {content.heading2}
-                    </Text>
+            {/* CENTER CONTENT */}
+            <View className="items-center flex-1 justify-center">
+                <Image
+                    source={require("@/assets/images/adaptive-icon.png")}
+                    style={{ width: 250, height: 250 }}
+                />
+
+                <View className="gap-6 px-4">
+                    <View className="items-center px-4 gap-2">
+                        <Text className="text-accent4 font-pBold text-3xl">
+                            {content.heading1}
+                        </Text>
+
+                        <Text className="text-primary text-center text-md leading-6">
+                            {content.heading2}
+                        </Text>
+                    </View>
                 </View>
-
-                <Text className="text-primary font-pRegular text-sm text-center">
-                    {content.body}
-                </Text>
             </View>
 
-            <CustomButton
-                className="bg-accent1 self-center w-14 aspect-square rounded-full items-center justify-center mt-auto"
-                debounce
-                onPress={() => {
-                    dispatch(setIsOnboarding(false));
-                    router.push("/home");
-                }}
-            >
-                <FontAwesome5 name="arrow-right" size={24} color="#fff" />
-            </CustomButton>
-        </ScrollView>
+            {/* FOOTER */}
+            <View className="pb-8 items-center">
+                <View
+                    style={{
+                        width: 50,
+                        height: 1,
+                        backgroundColor: "#D1D5DB",
+                        marginBottom: 12,
+                    }}
+                />
+
+                <Text
+                    style={{
+                        fontSize: 12,
+                        color: "#9CA3AF",
+                        letterSpacing: 0.5,
+                    }}
+                >
+                    © 2026 ADVAMINDS EDUSERVE PVT. LTD.
+                </Text>
+            </View>
+        </View>
     );
 }

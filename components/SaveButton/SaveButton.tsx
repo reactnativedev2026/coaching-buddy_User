@@ -73,13 +73,13 @@ export default function SaveButton({
 
     return (
         <CustomButton
-            className={`w-12 aspect-square items-center justify-center self-end rounded-full p-1 ${pathname.startsWith("/college") ? "bg-secondary" : "bg-accent1/10"}`}
+            className={`w-12 aspect-square items-center justify-center rounded-full p-1 ${pathname.startsWith("/college") ? "bg-secondary" : "bg-accent1/10"}`}
             onPress={handleOnPressSaveButton}
         >
             <MaterialCommunityIcons
                 name="bookmark-minus"
                 size={24}
-                color={savedItem == null ? "#666" : "#0d9488"}
+                color={savedItem == null ? "#242424" : "#0d9488"}
             />
         </CustomButton>
     );
