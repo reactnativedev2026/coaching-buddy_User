@@ -70,7 +70,7 @@ const GenderSelector = ({
 }) => {
   return (
     <View className="gap-2">
-      <Text className="text-primary text-sm font-pSemiBold">Gender *</Text>
+      <Text className="text-primary text-sm font-pSemiBold">Gender (Optional)</Text>
       
       <View className="flex-row gap-4">
         <TouchableOpacity
@@ -289,7 +289,7 @@ export default function CompleteYourProfile() {
   function handleGenderSelect(gender: GenderType) {
     setUserData((prev) => ({
       ...prev,
-      gender,
+      gender: prev.gender === gender ? null : gender,
     }));
 
     if (validationErrors.gender) {
@@ -332,7 +332,7 @@ export default function CompleteYourProfile() {
         return "";
 
       case "area":
-        if (!value || typeof value !== "string" || !value.trim()) return "Area is required";
+        if (!value || typeof value !== "string" || !value.trim()) return "";
         if (value.trim().length < 2)
           return "Area must be at least 2 characters";
         if (value.trim().length > 100)
@@ -340,7 +340,7 @@ export default function CompleteYourProfile() {
         return "";
 
       case "city":
-        if (!value || typeof value !== "string" || !value.trim()) return "City is required";
+        if (!value || typeof value !== "string" || !value.trim()) return "";
         if (value.trim().length < 2)
           return "City must be at least 2 characters";
         if (value.trim().length > 100)
@@ -348,7 +348,7 @@ export default function CompleteYourProfile() {
         return "";
 
       case "state":
-        if (!value || typeof value !== "string" || !value.trim()) return "State is required";
+        if (!value || typeof value !== "string" || !value.trim()) return "";
         if (value.trim().length < 2)
           return "State must be at least 2 characters";
         if (value.trim().length > 100)
@@ -356,13 +356,13 @@ export default function CompleteYourProfile() {
         return "";
 
       case "pincode":
-        if (!value || typeof value !== "string" || !value.trim()) return "Pincode is required";
+        if (!value || typeof value !== "string" || !value.trim()) return "";
         if (!/^\d{6}$/.test(value.trim()))
           return "Pincode must be exactly 6 digits";
         return "";
 
       case "landmark":
-        if (!value || typeof value !== "string" || !value.trim()) return "Landmark is required";
+        if (!value || typeof value !== "string" || !value.trim()) return "";
         if (value.trim().length < 2)
           return "Landmark must be at least 2 characters";
         if (value.trim().length > 100)
@@ -370,7 +370,6 @@ export default function CompleteYourProfile() {
         return "";
 
       case "gender":
-        if (!value) return "Please select your gender";
         return "";
 
       default:
@@ -413,12 +412,12 @@ export default function CompleteYourProfile() {
         email: user.email,
         name: userData.name.trim(),
         phone: userData.phone.trim() === "" ? undefined : userData.phone.trim(),
-        area: userData.area.trim(),
-        city: userData.city.trim(),
-        state: userData.state.trim(),
-        pincode: userData.pincode.trim(),
-        landmark: userData.landmark.trim(),
-        gender: userData.gender!,
+        area: userData.area.trim() === "" ? undefined : userData.area.trim(),
+        city: userData.city.trim() === "" ? undefined : userData.city.trim(),
+        state: userData.state.trim() === "" ? undefined : userData.state.trim(),
+        pincode: userData.pincode.trim() === "" ? undefined : userData.pincode.trim(),
+        landmark: userData.landmark.trim() === "" ? undefined : userData.landmark.trim(),
+        gender: userData.gender ?? undefined,
         avatarName: userData.avatarName,
       });
 
@@ -429,8 +428,8 @@ export default function CompleteYourProfile() {
         await setAuthToken(res.data.token);
         router.replace("/account-success");
       }
-    } catch (error) {
-      // console.error("Complete Profile error ", error);
+    } catch {
+      // Complete Profile error
     } finally {
       dispatch(setIsLoading(false));
     }
@@ -517,7 +516,7 @@ export default function CompleteYourProfile() {
 
           <View>
             <FormField
-              label="Pincode"
+              label="Pincode (Optional)"
               placeholder="Enter 6-digit pincode"
               value={userData.pincode}
               handleChangeText={(text) => handleChangeText("pincode", text)}
@@ -543,7 +542,7 @@ export default function CompleteYourProfile() {
 
           <View>
             <FormField
-              label="Area"
+              label="Area (Optional)"
               placeholder="Select area from pincode or enter manually"
               value={userData.area}
               handleChangeText={(text) => handleChangeText("area", text)}
@@ -559,7 +558,7 @@ export default function CompleteYourProfile() {
 
           <View>
             <FormField
-              label="City"
+              label="City (Optional)"
               placeholder="Auto-filled from pincode or enter manually"
               value={userData.city}
               handleChangeText={(text) => handleChangeText("city", text)}
@@ -577,7 +576,7 @@ export default function CompleteYourProfile() {
 
           <View>
             <FormField
-              label="State"
+              label="State (Optional)"
               placeholder="Auto-filled from pincode or enter manually"
               value={userData.state}
               handleChangeText={(text) => handleChangeText("state", text)}
@@ -593,7 +592,7 @@ export default function CompleteYourProfile() {
 
           <View>
             <FormField
-              label="Landmark"
+              label="Landmark (Optional)"
               placeholder="Enter nearby landmark"
               value={userData.landmark}
               handleChangeText={(text) => handleChangeText("landmark", text)}

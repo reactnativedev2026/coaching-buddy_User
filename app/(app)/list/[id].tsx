@@ -1,3 +1,4 @@
+import { addEnquiry } from "@/api/college.api";
 import CustomButton from "@/components/common/CustomButton";
 import CustomHeader from "@/components/common/CustomHeader";
 import CustomImage from "@/components/common/CustomImage";
@@ -6,14 +7,19 @@ import NotFound from "@/components/common/NotFound";
 import SaveButton from "@/components/SaveButton/SaveButton";
 import useGetSubCategoriesOrColleges from "@/hooks/useGetSubCategoriesOrColleges.hook";
 import chunkArray from "@/lib/chunkArray";
+import errorToast from "@/lib/errorToast";
 import getCapitalizedText from "@/lib/getCapitalizedText";
 import getImageURI from "@/lib/getImageURI";
+import successToast from "@/lib/successToast";
+import { useAppSelector } from "@/redux/store";
 import CategoryType from "@/types/Category.type";
 import CollegeType from "@/types/College.type";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
-import { FlatList, ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { FlatList, Linking, ScrollView, Text, useWindowDimensions, View } from "react-native";
+
+
 export default function List() {
   const { isLoading, categories, colleges } = useGetSubCategoriesOrColleges();
   // console.log("categories ", categories);
@@ -133,6 +139,7 @@ function Categories({ categories }: { categories: CategoryType[] }) {
 }
 
 function Colleges({ colleges }: { colleges: CollegeType[] }) {
+  const { user } = useAppSelector((state) => state.user);
   const { categoryName } = useLocalSearchParams<{
     categoryName: string;
   }>();
@@ -229,6 +236,12 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
                       style={{
                         width: 300,
                       }}
+                      onPress={() =>
+                        successToast(
+                          "Coming Soon",
+                          "Premium institutes will be available soon 🚀"
+                        )
+                      }
                       activeOpacity={0.9}
                     >
                       {/* IMAGE */}
@@ -302,6 +315,72 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
             </>
           }
           renderItem={({ item }) => {
+
+            let phone = "";
+            let whatsapp = "";
+
+            item.details?.forEach((detail) => {
+              if (detail.type === "phone") {
+                phone = detail.value;
+              }
+
+              if (detail.type === "whatsapp") {
+                whatsapp = detail.value;
+              }
+            });
+
+            const openPhone = () => {
+              if (!phone) return;
+
+              const finalPhone =
+                phone.length === 10 ? `+91${phone}` : phone;
+
+              Linking.openURL(`tel:${finalPhone}`);
+            };
+
+            const openWhatsapp = () => {
+              if (!whatsapp) return;
+
+              const finalWhatsapp =
+                whatsapp.length === 10
+                  ? `+91${whatsapp}`
+                  : whatsapp;
+
+              const url = `https://api.whatsapp.com/send?phone=${finalWhatsapp}&text=${encodeURIComponent(
+                "Hi, I am interested in your coaching institute."
+              )}`;
+
+              Linking.openURL(url);
+            };
+
+            const handleEnquiry = async () => {
+              try {
+                if (!user?.id) {
+                  errorToast("Please login first");
+                  return;
+                }
+
+                if (!user?.name) {
+                  errorToast("User name not found");
+                  return;
+                }
+
+                const payload = {
+                  storeId: item.id,
+                  userId: user.id,
+                  name: user.name,
+                  phone: user.phone || "",
+                  message: "Interested in admission",
+                };
+
+                const res = await addEnquiry(payload);
+
+                successToast(res.message);
+              } catch (error) {
+                errorToast("Failed to send enquiry");
+              }
+            };
+
             return (
               <CustomButton
                 className="bg-white rounded-2xl mx-4 mb-5 border border-[#E5E7EB]"
@@ -411,7 +490,7 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
                   {/* BUTTONS */}
                   <View className="flex-row justify-between">
 
-                    <CustomButton className="border border-[#D1D5DB] rounded-lg py-3 flex-1 mr-2">
+                    <CustomButton className="border border-[#D1D5DB] rounded-lg py-3 flex-1 mr-2" onPress={openPhone}>
                       <View className="flex-row justify-center items-center">
                         <MaterialCommunityIcons
                           name="phone-outline"
@@ -419,13 +498,13 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
                           color="#006B5E"
                         />
 
-                        <Text className="text-[13px] ml-1 text-primary font-pSemiBold">
+                        <Text className="text-[12px] ml-1 text-primary font-pSemiBold">
                           Call Now
                         </Text>
                       </View>
                     </CustomButton>
 
-                    <CustomButton className="border border-[#D1D5DB] rounded-lg py-3 flex-1 mr-2">
+                    <CustomButton className="border border-[#D1D5DB] rounded-lg py-3 flex-1 mr-2" onPress={openWhatsapp}>
                       <View className="flex-row justify-center items-center">
                         <MaterialCommunityIcons
                           name="whatsapp"
@@ -433,13 +512,13 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
                           color="#22C55E"
                         />
 
-                        <Text className="text-[13px] ml-1 text-primary font-pSemiBold">
+                        <Text className="text-[12px] ml-1 text-primary font-pSemiBold">
                           WhatsApp
                         </Text>
                       </View>
                     </CustomButton>
 
-                    <CustomButton className="border border-[#D1D5DB] rounded-lg py-3 flex-1">
+                    <CustomButton className="border border-[#D1D5DB] rounded-lg py-3 flex-1" onPress={handleEnquiry}>
                       <View className="flex-row justify-center items-center">
                         <MaterialCommunityIcons
                           name="email-outline"
@@ -447,7 +526,7 @@ function Colleges({ colleges }: { colleges: CollegeType[] }) {
                           color="#444"
                         />
 
-                        <Text className="text-[13px] ml-1 text-primary font-pSemiBold">
+                        <Text className="text-[12px] ml-1 text-primary font-pSemiBold">
                           Enquiry
                         </Text>
                       </View>

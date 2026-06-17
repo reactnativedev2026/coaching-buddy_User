@@ -35,7 +35,22 @@ console.log(message,status,"::::::::::::::",error?.config?.url)
         } else if (status === 500) {
             errorToast("Server Error", "Something went wrong on our side.");
         } else {
-            errorToast("Oops!", message);
+            // Ignore errors for specific endpoints or messages where empty states are expected
+            const isExpectedEmptyState =
+                (status === 404 || status === 400 || status === 200) &&
+                (error?.config?.url?.includes("/store/sync-saved") ||
+                    error?.config?.url?.includes("/store/search") ||
+                    error?.config?.url?.includes("/user/orders") ||
+                    error?.config?.url?.includes("cid=") ||
+                    message?.toLowerCase()?.includes("not found") ||
+                    message?.toLowerCase()?.includes("no saved stores") ||
+                    message?.toLowerCase()?.includes("no results"));
+
+            if (isExpectedEmptyState) {
+                // Do nothing
+            } else {
+                errorToast("Oops!", message);
+            }
         }
     } else if (error.request) {
         errorToast("Network Error", "Unable to connect to the server.");

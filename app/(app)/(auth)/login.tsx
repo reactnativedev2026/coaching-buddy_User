@@ -7,7 +7,7 @@ import successToast from "@/lib/successToast";
 import { emailValidation } from "@/lib/validation";
 import { setIsLoading, setUser } from "@/redux/slices/user.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
     ActivityIndicator,
@@ -22,7 +22,6 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const dispatch = useAppDispatch();
     const { isLoading } = useAppSelector((state) => state.user);
-    const navigation = useNavigation();
 
     async function handleLogin() {
         if (!emailValidation.regex.test(email)) {
@@ -46,7 +45,7 @@ export default function Login() {
             }
 
             router.replace("/verify-otp");
-        } catch (error) {
+        } catch {
         } finally {
             dispatch(setIsLoading(false));
         }
@@ -97,7 +96,7 @@ export default function Login() {
 
                     <View className="items-center mt-6">
                         <Text className="text-center text-xs text-gray-400">
-                            By continuing, you agree to Coaching Buddy's
+                            By continuing, you agree to Coaching Buddy&apos;s
                         </Text>
 
                         <View className="flex-row flex-wrap justify-center mt-1">

@@ -13,9 +13,8 @@ export default function SavedItem({ item }: { item: SavedType }) {
 
   return (
     <CustomButton
-      className={
-        "flex-row items-center bg-secondary rounded-xl shadow-md border-2 border-primary/5 px-2 py-4 gap-2"
-      }
+      className="flex-row items-center bg-secondary rounded-xl border border-primary/5 px-2 py-4 gap-2"
+
       onPress={() => router.push(`/college/${item.id}` as RelativePathString)}
       debounce
     >

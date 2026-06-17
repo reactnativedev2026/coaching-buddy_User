@@ -53,6 +53,7 @@ export default function FormField({
         {icon != null && <View className="ml-2">{icon}</View>}
 
         <TextInput
+        style={{ fontFamily: "Poppins-Regular" }}
           placeholder={placeholder}
           className={`py-4 text-primary text-base flex-1 ${
             disabled ? "opacity-50" : ""

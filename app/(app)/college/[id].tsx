@@ -1,4 +1,4 @@
-import { addComment, AddCommentReturnDataType } from "@/api/college.api";
+import { addComment, AddCommentReturnDataType, addEnquiry } from "@/api/college.api";
 import { placeOrder } from "@/api/orders.api";
 import AlreadyBookedWithThisCourseModal from "@/components/AlreadyBookedThisCouseModal/AlreadyBookedThisCourseModal";
 import CommentRateModal from "@/components/CommentRateModal/CommentRateModal";
@@ -32,6 +32,7 @@ import { useState } from "react";
 import {
     FlatList,
     Linking,
+    Share,
     Text,
     useWindowDimensions,
     View,
@@ -235,7 +236,10 @@ export default function College() {
                     })}
                 </ScrollView>
 
-                {tab === "Description" && <Description college={college} />}
+                {tab === "Description" && <Description
+                    college={college}
+                    user={user}
+                />}
                 {tab === "Gallery" && <Gallery college={college} />}
                 {tab === "Review" && (
                     <Review college={college} onRateCollege={onRateCollege} />
@@ -282,7 +286,20 @@ function Header({ college }: { college: CollegeType }) {
             </CustomButton>
 
             <View className="flex-row items-center gap-4">
-                <CustomButton className="bg-secondary p-2 rounded-full">
+                <CustomButton 
+                    className="bg-secondary p-2 rounded-full"
+                    onPress={async () => {
+                        try {
+                            const message = `Check out ${college.name} on Coaching Buddy!\n\nLocation: ${college.address.area}, ${college.address.city}\n\nDownload the app to book your classes now!`;
+                            await Share.share({
+                                message,
+                                title: `Share ${college.name}`
+                            });
+                        } catch (error: any) {
+                            console.error("Error sharing:", error.message);
+                        }
+                    }}
+                >
                     <Entypo name="share" size={24} color="black" />
                 </CustomButton>
 
@@ -292,7 +309,13 @@ function Header({ college }: { college: CollegeType }) {
     );
 }
 
-function Description({ college }: { college: CollegeType }) {
+function Description({
+    college,
+    user,
+}: {
+    college: CollegeType;
+    user: any;
+}) {
     let phone: string = "";
     let whatsapp: string = "";
 
@@ -329,6 +352,31 @@ function Description({ college }: { college: CollegeType }) {
         const url = `https://api.whatsapp.com/send?phone=${whatsapp}&text=${encodeURIComponent(message)}`;
 
         Linking.openURL(url);
+    }
+
+    async function handleEnquiry() {
+        try {
+            if (!user?.id) {
+                errorToast("Please login first");
+                return;
+            }
+
+            const payload = {
+                storeId: college.id,
+                userId: user.id,
+                name: user.name,
+                phone: user.phone || "",
+                message: "Interested in admission",
+            };
+
+            const res = await addEnquiry(payload);
+
+            successToast(res.message);
+            console.log("Enquiry submitted:", res);
+        } catch (error) {
+            console.log(error);
+            errorToast("Failed to send enquiry");
+        }
     }
 
     function openMap() {
@@ -391,37 +439,46 @@ function Description({ college }: { college: CollegeType }) {
                 <View className="flex-row gap-3 mt-4">
 
                     {/* CALL */}
-                    <CustomButton
-                        className="flex-1 bg-blue-950 py-3 rounded-xl"
-                        onPress={openPhone}
-                    >
-                        <View className="flex-row items-center justify-center gap-2">
+                    <CustomButton className="border border-[#D1D5DB] rounded-lg py-3 flex-1 mr-2" onPress={openPhone}>
+                        <View className="flex-row justify-center items-center">
                             <MaterialCommunityIcons
-                                name="phone"
-                                color="#0eeebd"
-                                size={18}
+                                name="phone-outline"
+                                size={16}
+                                color="#006B5E"
                             />
 
-                            <Text className="text-white font-semibold">
+                            <Text className="text-[12px] ml-1 text-primary font-pSemiBold">
                                 Call Now
                             </Text>
                         </View>
                     </CustomButton>
 
                     {/* WHATSAPP */}
-                    <CustomButton
-                        className="flex-1 bg-green-500 py-3 rounded-xl"
-                        onPress={openWhatsapp}
-                    >
-                        <View className="flex-row items-center justify-center gap-2">
+                    <CustomButton className="border border-[#D1D5DB] rounded-lg py-3 flex-1 mr-2" onPress={openWhatsapp}>
+                        <View className="flex-row justify-center items-center">
                             <MaterialCommunityIcons
                                 name="whatsapp"
-                                color="#064412"
-                                size={18}
+                                size={16}
+                                color="#22C55E"
                             />
 
-                            <Text className="text-white font-semibold">
+                            <Text className="text-[12px] ml-1 text-primary font-pSemiBold">
                                 WhatsApp
+                            </Text>
+                        </View>
+                    </CustomButton>
+
+                    {/* ENQUIRY */}
+                    <CustomButton className="border border-[#D1D5DB] rounded-lg py-3 flex-1" onPress={handleEnquiry}>
+                        <View className="flex-row justify-center items-center">
+                            <MaterialCommunityIcons
+                                name="email-outline"
+                                size={16}
+                                color="#444"
+                            />
+
+                            <Text className="text-[12px] ml-1 text-primary font-pSemiBold">
+                                Enquiry
                             </Text>
                         </View>
                     </CustomButton>

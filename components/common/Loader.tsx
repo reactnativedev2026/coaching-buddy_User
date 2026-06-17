@@ -1,9 +1,9 @@
 import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
 import {
     ActivityIndicator,
     ActivityIndicatorProps,
     Text,
+    useColorScheme,
     View,
 } from "react-native";
 
@@ -18,37 +18,42 @@ export default function Loader({
     size = "large",
     fullscreen = false,
 }: LoaderPropsType) {
-    const blurIntensity = 60;
-    const blurTint: "light" | "dark" | "default" = "dark"; // ✅ safe literal
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === "dark";
 
     const Container = fullscreen ? BlurView : View;
-    const containerProps = fullscreen
+    
+    // Using a safe fallback cast for BlurView props
+    const containerProps: any = fullscreen
         ? {
-              intensity: blurIntensity,
-              tint: blurTint,
-              className: "flex-1 justify-center items-center px-4",
+              intensity: 80,
+              tint: (isDark ? "dark" : "light") as any,
+              className: "flex-1 justify-center items-center w-full h-full",
           }
         : {
-              className: "items-center px-4 py-2",
+              className: "items-center px-4 py-4",
           };
 
     return (
         <Container {...containerProps}>
-            <View className="w-20 h-20 rounded-2xl justify-center items-center shadow-lg bg-white/10 backdrop-blur-md">
-                <View className="rounded-2xl overflow-hidden">
-                    <LinearGradient
-                        colors={["#0d9488", "#6C63FF"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        className="p-3 rounded-full"
-                    >
-                        <ActivityIndicator size={size} color="#ffffff" />
-                    </LinearGradient>
-                </View>
+            <View 
+                className={`w-32 h-32 rounded-3xl justify-center items-center shadow-lg ${isDark ? "bg-[#1E1E1E]" : "bg-white"}`}
+                style={{
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 12,
+                    elevation: 5,
+                }}
+            >
+                <ActivityIndicator size={size} color="#009688" style={{ transform: [{ scale: 1.2 }] }} />
+                
+                {message ? (
+                    <Text className={`text-xs mt-4 font-pSemiBold text-center px-2 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+                        {message}
+                    </Text>
+                ) : null}
             </View>
-            <Text className="text-sm text-white mt-4 font-pSemiBold">
-                {message}
-            </Text>
         </Container>
     );
 }

@@ -49,14 +49,14 @@ const Carousel: React.FC<CarouselProps> = ({
 
     // Create infinite scroll by duplicating images
     const extendedImages = React.useMemo(() => {
-        if (images.length === 0) return [];
+        if (!images || images.length === 0) return [];
         if (images.length === 1) return images;
 
         // Create triple array for smooth infinite scroll
         return [...images, ...images, ...images];
     }, [images]);
 
-    const totalImages = images.length;
+    const totalImages = images?.length || 0;
     const startIndex = totalImages; // Start from the middle set
 
     // Initialize scroll position
@@ -214,7 +214,7 @@ const Carousel: React.FC<CarouselProps> = ({
     // calculate height according to screen width for 16:9 ratio
     height = (screenWidth * 9) / 16;
 
-    if (images.length === 0) {
+    if (!images || images.length === 0) {
         return (
             <View
                 style={[

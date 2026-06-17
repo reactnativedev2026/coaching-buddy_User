@@ -80,7 +80,7 @@ export default function useGetCollege() {
 }
 
             } catch (error) {
-                console.error("use get college error ", error);
+                // console.error("use get college error ", error);
                 setCollege(null);
             } finally {
                 setIsLoading(false);

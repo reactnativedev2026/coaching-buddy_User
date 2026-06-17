@@ -133,3 +133,18 @@ export async function getSearchCollegesSuggestions(query: string) {
 
     return res.data;
 }
+
+export async function addEnquiry(data: {
+    storeId: string;
+    userId: string;
+    name: string;
+    phone?: string;
+    message: string;
+}) {
+    const res = await api.post(
+        "/user/enquiry/add",
+        data
+    );
+
+    return res.data;
+}

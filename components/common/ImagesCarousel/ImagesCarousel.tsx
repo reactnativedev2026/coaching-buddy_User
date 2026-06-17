@@ -17,6 +17,10 @@ import CustomImage from "../CustomImage";
 export default function ImagesCarousel({ images }: { images: string[] }) {
     const { width, height } = useWindowDimensions();
 
+    if (!images || images.length === 0) {
+        return null;
+    }
+
     const extendedImages = [images[images.length - 1], ...images, images[0]];
 
     const [currentIndex, setCurrentIndex] = useState(0);

@@ -41,13 +41,13 @@ type SignUpParamsType = {
     email: string;
     name: string;
     phone?: string;
-    area:string;
-    state:string;
-    pincode:string;
-    landmark:string;
-    city:string;
+    area?: string;
+    state?: string;
+    pincode?: string;
+    landmark?: string;
+    city?: string;
     avatarName: string;
-    gender:string
+    gender?: string | null;
 };
 
 export async function signUp(data: SignUpParamsType) {
@@ -59,6 +59,11 @@ export async function signUp(data: SignUpParamsType) {
         }>
     >(`/user/sign-up/`, data);
 
+    return res.data;
+}
+
+export async function deleteUser(userId: string) {
+    const res = await api.delete<ApiResponseType<null>>(`/user/delete/${userId}`);
     return res.data;
 }
 

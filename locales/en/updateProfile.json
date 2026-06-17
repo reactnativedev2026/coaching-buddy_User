@@ -2,7 +2,7 @@
     "nameFieldLabel": "Name",
     "nameFieldPlaceholder": "Username",
 
-    "mobileFieldLabel": "Mobile Number",
+    "mobileFieldLabel": "Mobile Number (Optional)",
     "mobileFieldPlaceholder": "Number",
 
     "emailFieldLabel": "Email",

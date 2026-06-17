@@ -6,11 +6,14 @@ import { ScrollView, Text, View } from "react-native";
 
 export default function TermsAndConditions() {
     return (
-        <View className="flex-1 bg-secondary">
+        <View style={{
+            marginTop:30,
+            flex: 1,
+        }} >
             <CustomHeader title="Terms & Conditions" />
 
             <ScrollView
-                className="flex-1"
+                className="flex-1 px-4 py-2"
                 contentContainerStyle={{
                     padding: 16,
                     paddingBottom: 40,

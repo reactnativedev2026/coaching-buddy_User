@@ -12,7 +12,6 @@ import { setIsLoading, setUser } from "@/redux/slices/user.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import AvatarType from "@/types/Avatar.type";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { useState } from "react";
 import { KeyboardAvoidingView, ScrollView, Text, View } from "react-native";
 
@@ -122,12 +121,12 @@ export default function UpdateProfile() {
                         imageClassName="w-full h-full"
                     />
 
-                    <CustomButton
+                    {/* <CustomButton
                         className="bg-accent1 p-2 rounded-full overflow-hidden items-center justify-center absolute bottom-1 right-2"
                         onPress={() => setIsAvatarSelectModalVisible(true)}
                     >
                         <FontAwesome5 name="pen" size={14} color="#fff" />
-                    </CustomButton>
+                    </CustomButton> */}
                 </View>
 
                 <View className="px-4 gap-6">

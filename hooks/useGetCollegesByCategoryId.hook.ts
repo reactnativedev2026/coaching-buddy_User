@@ -20,18 +20,18 @@ export default function useGetCollegesByCategoryId(
 
                 if (res.data != null) {
                     const data = res.data.map((item) => {
-                        const logoImages = item.images.logo.map(
+                        const logoImages = item.images?.logo?.map(
                             (logoItem) => logoItem.path
-                        );
-                        const galleryImages = item.images.gallery.map(
+                        ) || [];
+                        const galleryImages = item.images?.gallery?.map(
                             (galleryItem) => galleryItem.path
-                        );
-                        const bannerImages = item.images.banner.map(
+                        ) || [];
+                        const bannerImages = item.images?.banner?.map(
                             (bannerItem) => bannerItem.path
-                        );
-                        const coverImages = item.images.cover.map(
+                        ) || [];
+                        const coverImages = item.images?.cover?.map(
                             (coverItem) => coverItem.path
-                        );
+                        ) || [];
 
                         return {
                             id: item.uid,
@@ -47,11 +47,11 @@ export default function useGetCollegesByCategoryId(
                                 cover: coverImages,
                             },
                             address: {
-                                state: item.address.state,
-                                city: item.address.city,
-                                area: item.address.area,
-                                nearBy: item.address.near_by,
-                                pincode: item.address.pincode,
+                                state: item.address?.state || "",
+                                city: item.address?.city || "",
+                                area: item.address?.area || "",
+                                nearBy: item.address?.near_by || "",
+                                pincode: item.address?.pincode || "",
                             },
                             comments: item.comments?.map((item) => {
                                 return {
@@ -64,18 +64,18 @@ export default function useGetCollegesByCategoryId(
                                     userId: item.user_id,
                                 };
                             }),
-                            categories: item.categories.map((category) => {
+                            categories: item.categories?.map((category) => {
                                 return {
                                     id: category.uid,
                                     name: category.name,
                                 };
-                            }),
-                            details: item.details.map((detail) => {
+                            }) || [],
+                            details: item.details?.map((detail) => {
                                 return {
                                     type: detail.type,
                                     value: detail.value,
                                 };
-                            }),
+                            }) || [],
                             courses: item.products?.map((product) => ({
                                 id: product.uid,
                                 name: product.name,
@@ -83,9 +83,9 @@ export default function useGetCollegesByCategoryId(
                                 sellingPrice: product.selling_price,
                                 discount: product.discount,
                                 shortDescription: product.short_desc,
-                                images: product.images.map((img) => img.path),
-                                category: product.keywords[0]?.keyword || "",
-                            })),
+                                images: product.images?.map((img) => img.path) || [],
+                                category: product.keywords?.[0]?.keyword || "",
+                            })) || [],
                         };
                     });
 

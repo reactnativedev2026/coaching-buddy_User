@@ -1,18 +1,23 @@
 // Profile.tsx
 
+import { deleteUser } from "@/api/users.api";
 import CustomImage from "@/components/common/CustomImage";
+import Loader from "@/components/common/Loader";
 import ProfileOption from "@/components/ProfileOption/ProfileOption";
 import IMAGES from "@/constants/images.contant";
 import deleteAuthToken from "@/lib/deleteAuthToken";
-import { setIsAuthenticated, setUser } from "@/redux/slices/user.slice";
+import errorToast from "@/lib/errorToast";
+import successToast from "@/lib/successToast";
+import { setIsAuthenticated, setIsLoading, setUser } from "@/redux/slices/user.slice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { ScrollView, Text, View } from "react-native";
+import { Alert, Linking, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
 
 export default function Profile() {
     const dispatch = useAppDispatch();
-    const { user } = useAppSelector((state) => state.user);
+    const { user, isLoading } = useAppSelector((state) => state.user);
 
     async function handleLogout() {
         await deleteAuthToken();
@@ -21,11 +26,48 @@ export default function Profile() {
         dispatch(setIsAuthenticated(false));
     }
 
+    async function handleDeleteAccount() {
+        Alert.alert(
+            "Delete Account",
+            "Are you sure you want to delete your account? This action is permanent and cannot be undone.",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            dispatch(setIsLoading(true));
+                            await deleteUser(user.id);
+                            await deleteAuthToken();
+                            dispatch(setUser(null));
+                            dispatch(setIsAuthenticated(false));
+                            successToast("Account deleted successfully");
+                        } catch (error) {
+                            console.error("Delete Account error", error);
+                            errorToast("Failed to delete account. Please try again or contact support.");
+                        } finally {
+                            dispatch(setIsLoading(false));
+                        }
+                    },
+                },
+            ]
+        );
+    }
+
+    const handleContactSupport = () => {
+        router.push("/contact-support");
+    };
+
     if (user == null) return null;
 
     return (
-        <ScrollView
-            className="flex-1 bg-secondary"
+        <View className="flex-1 bg-secondary">
+            <ScrollView
+                className="flex-1"
             contentContainerStyle={{
                 paddingHorizontal: 24,
                 paddingTop: 16,
@@ -122,6 +164,14 @@ export default function Profile() {
                     isLogout
                     containerColor="bg-red-100"
                 />
+
+                <ProfileOption
+                    icon={<AntDesign name="delete" size={18} color="#B91C1C" />}
+                    title="Delete Account"
+                    handleOnPress={handleDeleteAccount}
+                    isLogout
+                    containerColor="bg-red-100"
+                />
                 {/* NEED HELP SECTION */}
                 <View
                     className="bg-accent1 rounded-3xl p-5 mt-4 relative overflow-hidden"
@@ -157,13 +207,22 @@ export default function Profile() {
                     </Text>
 
                     {/* BUTTON */}
-                    <View className="mt-5 self-start bg-white px-5 py-3 rounded-full">
+                    <TouchableOpacity 
+                        className="mt-5 self-start bg-white px-5 py-3 rounded-full"
+                        onPress={handleContactSupport}
+                    >
                         <Text className="text-[#009688] font-pSemiBold text-sm">
                             Contact Support
                         </Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
+        {isLoading && (
+            <View className="absolute inset-0 justify-center items-center z-50">
+                <Loader fullscreen message="Deleting account..." />
+            </View>
+        )}
+    </View>
     );
 }

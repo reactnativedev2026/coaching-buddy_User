@@ -115,7 +115,7 @@ export default function useGetSubCategoriesOrColleges() {
             } catch (error) {
                 setCategories([]);
                 setColleges([]);
-                console.error("Use get sub categories or colleges ", error);
+                // console.error("Use get sub categories or colleges ", error);
             } finally {
                 setIsLoading(false);
             }

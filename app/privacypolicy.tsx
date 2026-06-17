@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
                     headerShown: false,
                 }}
             />
-            <View className="flex-1 bg-secondary">
+            <View className="flex-1 bg-secondary" style={{ paddingTop: 40 }}>
                 <CustomHeader title="Privacy Policy" />
 
                 <ScrollView
@@ -35,10 +35,7 @@ export default function PrivacyPolicy() {
                         </Text>
 
                         <Text className="text-gray-700 leading-6 mb-6">
-                            Thank you for using CoachingBuddy ("we", "our", "us").
-                            Your privacy matters to us. This Privacy Policy explains
-                            how we collect, use, store, and share information when
-                            you use the CoachingBuddy mobile application ("App").
+                            {"Thank you for using CoachingBuddy (\"we\", \"our\", \"us\"). Your privacy matters to us. This Privacy Policy explains how we collect, use, store, and share information when you use the CoachingBuddy mobile application (\"App\")."}
                         </Text>
 
                         {/* SECTION */}

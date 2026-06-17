@@ -19,6 +19,8 @@ export default function useAuth() {
                 const res = await auth();
                 if (res.data != null) {
                     dispatch(setUser(res.data));
+                    console.log("User authenticated successfully");
+                    console.log(res.data);
                     dispatch(setIsAuthenticated(true));
                 }
             } catch (error) {

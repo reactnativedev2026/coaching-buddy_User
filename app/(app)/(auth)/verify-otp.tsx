@@ -73,6 +73,8 @@ export default function VerifyOtp() {
 
             if (res.data != null) {
                 dispatch(setUser(res.data.user));
+                console.log("OTP verified successfully");
+                console.log(res.data.user);
 
                 if (res.data.token != null) {
                     await setAuthToken(res.data.token);
@@ -90,7 +92,7 @@ export default function VerifyOtp() {
                     }
                 }, 200);
             }
-        } catch (error) {
+        } catch {
             setIsNavigating(false);
         } finally {
             dispatch(setIsLoading(false));
@@ -110,7 +112,7 @@ export default function VerifyOtp() {
             const res = await resendOTP(user.id);
 
             successToast(res.message);
-        } catch (error) {
+        } catch {
         } finally {
             dispatch(setIsLoading(false));
         }
@@ -189,7 +191,7 @@ export default function VerifyOtp() {
                     {/* TERMS */}
                     <View className="items-center mt-6">
                         <Text className="text-center text-xs text-gray-400">
-                            By continuing, you agree to Coaching Buddy's
+                            By continuing, you agree to Coaching Buddy&apos;s
                         </Text>
 
                         <View className="flex-row flex-wrap justify-center mt-1">

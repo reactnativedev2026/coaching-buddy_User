@@ -21,10 +21,7 @@ export default function useGetUserOrders() {
             try {
                 const res = await getUserOrders(user.id);
 
-                console.log(JSON.stringify(res.status));
-
                 if (res.data != null) {
-                    console.log("dfsdsdsdsgfds")
                   const ordersData: OrderType[] = res.data.orders.map((order: any) => ({
   id: order.uid,
   status: order.status,
@@ -52,11 +49,9 @@ export default function useGetUserOrders() {
   },
 }));
 
-console.log(ordersData,"APPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
                     setOrders(ordersData);
                 }
             } catch (error) {
-                console.error("use get user orders error", error)
                 setOrders([]);
             } finally {
                 setIsLoading(false);
